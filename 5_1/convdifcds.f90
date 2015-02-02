@@ -26,7 +26,7 @@ real phiA,phiB
 !
 !
 !
-L = 1.
+
 rho = 1.
 u = 0.1
 gamma = 0.1
@@ -36,14 +36,17 @@ phiB = 0.
 
 D = gamma/dx
 F = rho*u
-
-
+!
+!...Set up the grid
+!
+L  = 1.
 dx = L/float(n)
 do ii = 1,n
    x(ii) = (ii-0.5)*dx
 end do
 !
-!...Left boundary
+!...Set up system
+!   Left boundary
 !
 aw =  0.
 ae =  D - F/2.
@@ -57,8 +60,33 @@ c(1) = -ae
 d(1) =  Su
 !
 do ii = 2,n-1
-
+   aw = D + F/2.
+   ae = D - F/2.
+   Su = 0.
+   Sp = 0.
+   ap = ae + aw - Sp
+   !
+   a(1) = -aw
+   b(1) =  ap
+   c(1) = -ae
+   d(1) =  Su
 end do
 !...Right boundary
+aw =  D + F/2.
+ae =  0.
+Su =  (2.*D - F)*phiB
+Sp = -(2.*D - F)
+ap =  ae + aw - Sp
+!
+a(n) = -aw
+b(n) =  ap
+c(n) = -ae
+d(n) =  Su
+!
+!...Solve the linear system
+!
+call thomas(n,a,b,c,d)
+!
+
 
 END
