@@ -21,7 +21,19 @@ IMPLICIT NONE
 integer n,ii,
 parameter (n=5)
 
-
+!
+!...Left boundary
+!
+aw = 0.
+ae
+Su
+Sp
+ap = ae + aw - Sp
+!
+a(1) = -aw
+b(1) =  ap
+c(1) = -ae
+d(1) = 
 
 
 END
