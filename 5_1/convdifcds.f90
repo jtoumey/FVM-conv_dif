@@ -20,24 +20,27 @@
 PROGRAM CONVDIFCDS
 IMPLICIT NONE
 !
-integer n,ii,
+integer n,ii,jj
 parameter (n=5)
 real dx,L,xmax,x(n)
 real rho,u,gamma
-real phiA,phiB
+real phiA,phiB,Dc,F
+real aw,ae,Su,Sp,ap
+real a(n),b(n),c(n),d(n),phi(n)
 !
+!...System parameters
+!   Density [kg/m^3], velocity [m/s], diffusion coeff [kg/m.s]
 !
-!
-
-rho = 1.
-u = 0.1
+rho   = 1.
+u     = 0.1
 gamma = 0.1
-phiA = 1.
-phiB = 0.
-
-
-D = gamma/dx
-F = rho*u
+phiA  = 1.
+phiB  = 0.
+!
+!...Diffusion conductance, convective mass flux per unit area
+!
+Dc = gamma/dx
+F  = rho*u
 !
 !...Set up the grid
 !
@@ -51,9 +54,9 @@ end do
 !   Left boundary
 !
 aw =  0.
-ae =  D - F/2.
-Su =  (2.*D + F)*phiA
-Sp = -(2.*D + F)
+ae =  Dc - F/2.
+Su =  (2.*Dc + F)*phiA
+Sp = -(2.*Dc + F)
 ap =  ae + aw - Sp
 !
 a(1) = -aw
@@ -62,8 +65,8 @@ c(1) = -ae
 d(1) =  Su
 !
 do ii = 2,n-1
-   aw = D + F/2.
-   ae = D - F/2.
+   aw = Dc + F/2.
+   ae = Dc - F/2.
    Su = 0.
    Sp = 0.
    ap = ae + aw - Sp
@@ -74,10 +77,10 @@ do ii = 2,n-1
    d(1) =  Su
 end do
 !...Right boundary
-aw =  D + F/2.
+aw =  Dc + F/2.
 ae =  0.
-Su =  (2.*D - F)*phiB
-Sp = -(2.*D - F)
+Su =  (2.*Dc - F)*phiB
+Sp = -(2.*Dc - F)
 ap =  ae + aw - Sp
 !
 a(n) = -aw
@@ -89,6 +92,19 @@ d(n) =  Su
 !
 call thomas(n,a,b,c,d)
 !
-
-
+!...Write results
+!
+write(6,101)
+open(unit=7,file='temp_distr.dat')
+write(6,201)0.,phiA
+write(7,201)0.,phiA
+do jj = 1,n
+   write(6,201)x(jj),phi(jj)
+   write(7,201)x(jj),phi(jj)
+end do
+write(6,201)xmax,phiB
+write(7,201)xmax,phiB
+!
+101 format(5x,'____x(j)___',3x,'__phi(j)____')
+201 format(3x,f12.5,3x,f12.5)
 END
