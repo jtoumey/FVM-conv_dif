@@ -27,6 +27,7 @@ real rho,u,gamma
 real phiA,phiB,Dc,F
 real aw,ae,Su,Sp,ap
 real a(n),b(n),c(n),d(n),phi(n)
+real phi_anlyt(n)
 !
 !...System parameters
 !   Density [kg/m^3], velocity [m/s], diffusion coeff [kg/m.s]
@@ -37,15 +38,16 @@ gamma = 0.1
 phiA  = 1.
 phiB  = 0.
 !
-!...Diffusion conductance, convective mass flux per unit area
+!...Length [m], dx [m]
+!   Diffusion conductance, convective mass flux per unit area
 !
+L  = 1.
+dx = L/float(n)
 Dc = gamma/dx
 F  = rho*u
 !
 !...Set up the grid
 !
-L  = 1.
-dx = L/float(n)
 do ii = 1,n
    x(ii) = (ii-0.5)*dx
 end do
@@ -59,6 +61,8 @@ Su =  (2.*Dc + F)*phiA
 Sp = -(2.*Dc + F)
 ap =  ae + aw - Sp
 !
+write(6,301)aw,ae,Su,Sp,ap
+!
 a(1) = -aw
 b(1) =  ap
 c(1) = -ae
@@ -71,10 +75,11 @@ do ii = 2,n-1
    Sp = 0.
    ap = ae + aw - Sp
    !
-   a(1) = -aw
-   b(1) =  ap
-   c(1) = -ae
-   d(1) =  Su
+   write(6,301)aw,ae,Su,Sp,ap
+   a(ii) = -aw
+   b(ii) =  ap
+   c(ii) = -ae
+   d(ii) =  Su
 end do
 !...Right boundary
 aw =  Dc + F/2.
@@ -83,6 +88,7 @@ Su =  (2.*Dc - F)*phiB
 Sp = -(2.*Dc - F)
 ap =  ae + aw - Sp
 !
+write(6,301)aw,ae,Su,Sp,ap
 a(n) = -aw
 b(n) =  ap
 c(n) = -ae
@@ -90,7 +96,11 @@ d(n) =  Su
 !
 !...Solve the linear system
 !
-call thomas(n,a,b,c,d)
+call thomas(n,a,b,c,d,phi)
+!
+!...Calculate an analytical solution
+!
+call analyt_soln(n,x,phi_anlyt)
 !
 !...Write results
 !
@@ -102,9 +112,19 @@ do jj = 1,n
    write(6,201)x(jj),phi(jj)
    write(7,201)x(jj),phi(jj)
 end do
-write(6,201)xmax,phiB
-write(7,201)xmax,phiB
+write(6,201)L,phiB
+write(7,201)L,phiB
 !
-101 format(5x,'____x(j)___',3x,'__phi(j)____')
+101 format(5x,'____x(j)___',3x,'__phi(j)___')
 201 format(3x,f12.5,3x,f12.5)
+301 format(3x,f12.5,3x,f12.5,3x,f12.5,3x,f12.5,3x,f12.5)
 END
+
+SUBROUTINE ANALYT_SOLN(n,x,phi_anlyt)
+integer n,ii
+real x(n),phi_anlyt(n)
+!
+do ii = 1,n
+   phi_anlyt(ii) = ii
+end do
+END SUBROUTINE ANALYT_SOLN
