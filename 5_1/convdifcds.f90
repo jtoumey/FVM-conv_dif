@@ -61,8 +61,6 @@ Su =  (2.*Dc + F)*phiA
 Sp = -(2.*Dc + F)
 ap =  ae + aw - Sp
 !
-write(6,301)aw,ae,Su,Sp,ap
-!
 a(1) = -aw
 b(1) =  ap
 c(1) = -ae
@@ -75,7 +73,6 @@ do ii = 2,n-1
    Sp = 0.
    ap = ae + aw - Sp
    !
-   write(6,301)aw,ae,Su,Sp,ap
    a(ii) = -aw
    b(ii) =  ap
    c(ii) = -ae
@@ -88,7 +85,6 @@ Su =  (2.*Dc - F)*phiB
 Sp = -(2.*Dc - F)
 ap =  ae + aw - Sp
 !
-write(6,301)aw,ae,Su,Sp,ap
 a(n) = -aw
 b(n) =  ap
 c(n) = -ae
@@ -100,31 +96,33 @@ call thomas(n,a,b,c,d,phi)
 !
 !...Calculate an analytical solution
 !
-call analyt_soln(n,x,phi_anlyt)
+call analyt_soln(n,x,rho,u,L,gamma,phi_anlyt)
 !
 !...Write results
 !
 write(6,101)
 open(unit=7,file='temp_distr.dat')
-write(6,201)0.,phiA
-write(7,201)0.,phiA
+write(6,201)0.,phiA,(exp(1.)-exp(0.))/(exp(rho*u*L/gamma)-1)
+write(7,201)0.,phiA,(exp(1.)-exp(0.))/(exp(rho*u*L/gamma)-1)
 do jj = 1,n
-   write(6,201)x(jj),phi(jj)
-   write(7,201)x(jj),phi(jj)
+   write(6,201)x(jj),phi(jj),phi_anlyt(jj)
+   write(7,201)x(jj),phi(jj),phi_anlyt(jj)
 end do
-write(6,201)L,phiB
-write(7,201)L,phiB
+write(6,201)L,phiB,(exp(1.)-exp(L))/(exp(rho*u*L/gamma)-1)
+write(7,201)L,phiB,(exp(1.)-exp(L))/(exp(rho*u*L/gamma)-1)
 !
-101 format(5x,'____x(j)___',3x,'__phi(j)___')
-201 format(3x,f12.5,3x,f12.5)
-301 format(3x,f12.5,3x,f12.5,3x,f12.5,3x,f12.5,3x,f12.5)
+101 format(5x,'____x(j)___',5x,'__phi(j)___',5x,'__Analytic_')
+201 format(3x,f12.5,3x,f12.5,3x,f12.5)
 END
 
-SUBROUTINE ANALYT_SOLN(n,x,phi_anlyt)
+SUBROUTINE ANALYT_SOLN(n,x,rho,u,L,gamma,phi_anlyt)
 integer n,ii
 real x(n),phi_anlyt(n)
+real rho,u,L,gamma
+real d1
 !
+d1 = exp(rho*u*L/gamma) - 1.
 do ii = 1,n
-   phi_anlyt(ii) = ii
+   phi_anlyt(ii) = (exp(1.) - exp(rho*u*x(ii)/gamma))/d1
 end do
 END SUBROUTINE ANALYT_SOLN
