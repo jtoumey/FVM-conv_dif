@@ -21,19 +21,19 @@ PROGRAM CONVDIFCDS
 IMPLICIT NONE
 !
 integer n,ii,jj
-parameter (n=5)
+parameter (n=20)
 real dx,L,xmax,x(n)
 real rho,u,gamma
 real phiA,phiB,Dc,F
 real aw,ae,Su,Sp,ap
 real a(n),b(n),c(n),d(n),phi(n)
-real phi_anlyt(n)
+real phi_at(n)
 !
 !...System parameters
 !   Density [kg/m^3], velocity [m/s], diffusion coeff [kg/m.s]
 !
 rho   = 1.
-u     = 0.1
+u     = 2.5
 gamma = 0.1
 phiA  = 1.
 phiB  = 0.
@@ -96,17 +96,17 @@ call thomas(n,a,b,c,d,phi)
 !
 !...Calculate an analytical solution
 !
-call analyt_soln(n,x,rho,u,L,gamma,phi_anlyt)
+call analyt_soln(n,x,rho,u,L,gamma,phi_at)
 !
 !...Write results
 !
 write(6,101)
 open(unit=7,file='temp_distr.dat')
-write(6,201)0.,phiA,(exp(1.)-exp(0.))/(exp(rho*u*L/gamma)-1)
-write(7,201)0.,phiA,(exp(1.)-exp(0.))/(exp(rho*u*L/gamma)-1)
+write(6,201)0.,phiA,(1. - exp(0.))/(exp(rho*u*L/gamma)-1) + 1.
+write(7,201)0.,phiA,(1. - exp(0.))/(exp(rho*u*L/gamma)-1) + 1.
 do jj = 1,n
-   write(6,201)x(jj),phi(jj),phi_anlyt(jj)
-   write(7,201)x(jj),phi(jj),phi_anlyt(jj)
+   write(6,201)x(jj),phi(jj),phi_at(jj)
+   write(7,201)x(jj),phi(jj),phi_at(jj)
 end do
 write(6,201)L,phiB,(exp(1.)-exp(L))/(exp(rho*u*L/gamma)-1)
 write(7,201)L,phiB,(exp(1.)-exp(L))/(exp(rho*u*L/gamma)-1)
@@ -115,14 +115,14 @@ write(7,201)L,phiB,(exp(1.)-exp(L))/(exp(rho*u*L/gamma)-1)
 201 format(3x,f12.5,3x,f12.5,3x,f12.5)
 END
 
-SUBROUTINE ANALYT_SOLN(n,x,rho,u,L,gamma,phi_anlyt)
+SUBROUTINE ANALYT_SOLN(n,x,rho,u,L,gamma,phi_at)
 integer n,ii
-real x(n),phi_anlyt(n)
+real x(n),phi_at(n)
 real rho,u,L,gamma
 real d1
 !
 d1 = exp(rho*u*L/gamma) - 1.
 do ii = 1,n
-   phi_anlyt(ii) = (exp(1.) - exp(rho*u*x(ii)/gamma))/d1
+   phi_at(ii) = (1. - exp(rho*u*x(ii)/gamma))/d1 + 1.
 end do
 END SUBROUTINE ANALYT_SOLN
