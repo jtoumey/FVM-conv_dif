@@ -16,6 +16,11 @@
 !                We use the Central differencing scheme for both the       !
 !                convective and diffusive terms.                           !
 !                                                                          !
+!                Cases                                                     !
+!                   (i)   u = 0.1 [m/s], n = 5                             !
+!                   (ii)  u = 2.5 [m/s], n = 5                             !
+!                   (iii) u = 2.5 [m/s], n = 20                            !
+!                                                                          !
 !**************************************************************************!
 PROGRAM CONVDIFCDS
 IMPLICIT NONE
