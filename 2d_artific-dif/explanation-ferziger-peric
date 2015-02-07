@@ -3,7 +3,7 @@ very simple equation that is readily solved in a sequential manner without
 iteration. On the other hand, the CDS gives a zero value for the coefficient
 on the main diagonal, A_P, making the solution difficult. Most iterative 
 solvers would fail to converge for this problem; however, by using the 
-deferred correction approach described abovve, it is possible to obtain the 
+deferred correction approach described above, it is possible to obtain the 
 solution [1].
 
 [1] Ferziger, J. H., Peric, M. Computational Methods for Fluid Dynamics, 
