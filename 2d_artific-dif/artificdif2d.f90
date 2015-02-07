@@ -1,6 +1,6 @@
 !**************************************************************************!
 !                                                                          !
-!  Module:       2DARTIFICDIF.F90                                          !
+!  Module:       ARTIFICDIF2D.F90                                          !
 !                                                                          !
 !  Programmer:   Julian M. Toumey                                          !
 !                Madison, WI                                               !
@@ -15,11 +15,11 @@
 !                comparting discretization schemes.                        !
 !                                                                          !
 !**************************************************************************!
-PROGRAM 2DARTIFICDIF
+PROGRAM ARTIFICDIF2D
 IMPLICIT NONE
 !
 integer IL,JL,ii,jj,kk,iter
-parameter (IL=10,JL=10)
+parameter (IL=100,JL=100)
 real dx,dy,xmax,ymax,x(IL),y(JL)
 real rho,u,v
 real phiW,phiN,phiE,phiS,Fx,Fy
@@ -72,7 +72,7 @@ phi = 0.
 !
 !--------------------------------------------------------------------------!
 call cpu_time(t1)
-do while (resid >= .001)
+do while (resid >= .00000001)
    !   save previous temperature distribution to compare errors
    phiprev = phi
    !-----------------------------------------------------------------------!
@@ -97,37 +97,37 @@ do while (resid >= .001)
    !   West Interior cells
    do jj = 2,JL-1
       aw = 0.
-      ae = k*area/dx
-      as = k*area/dx
-      an = k*area/dx
-      Sp = 0.
-      Su = area*qw
+      ae = 0.
+      as = Fy*dx
+      an = 0.
+      Sp = -Fx*dy
+      Su = Fx*dy*phiW
       ap = aw + ae + as + an - Sp
       !
       a(jj) = -as
       b(jj) =  ap
       c(jj) = -an
-      d(jj) =  Su + ae*T(jj,2)
+      d(jj) =  Su + ae*phi(jj,2)
    end do
    !   NW corner
    aw =  0.
-   ae =  k*area/dx
-   as =  k*area/dx
+   ae =  0.
+   as =  Fy*dx
    an =  0.
-   Sp = -2.*k*area/dx
-   Su =  area*qw + 2.*k*area*Tn/dx
+   Sp = -Fx*dy
+   Su =  Fx*dy*phiW + Fy*dx*phiN
    ap =  aw + ae + as + an - Sp
    !
    a(JL) = -as
    b(JL) =  ap
    c(JL) = -an
-   d(JL) =  Su + ae*T(JL,2)
+   d(JL) =  Su + ae*phi(JL,2)
    !
    !...solve N-S system with the TDMA
    !
-   call thomas(JL,a,b,c,d,Tsol)
+   call thomas(JL,a,b,c,d,phisol)
    !...Store temperature solution
-   T(:,1) = Tsol
+   phi(:,1) = phisol
    !-----------------------------------------------------------------------!
    !
    !...Interior Cells, marching W to E
@@ -135,24 +135,24 @@ do while (resid >= .001)
    !-----------------------------------------------------------------------!
    do ii = 2,IL-1
       !   South boundary
-      aw = k*area/dx
-      ae = k*area/dx
+      aw = Fx*dy
+      ae = 0.
       as = 0.
-      an = k*area/dx
-      Sp = 0
-      Su = 0
+      an = 0.
+      Sp = -Fy*dx
+      Su = 0.
       ap = aw + ae + as + an - Sp
       !
       a(1) = -as
       b(1) =  ap
       c(1) = -an
-      d(1) =  Su + ae*T(1,ii+1) + aw*T(1,ii-1)
+      d(1) =  Su + ae*phi(1,ii+1) + aw*phi(1,ii-1)
       !
       do jj = 2,JL-1
-         aw = k*area/dx
-         ae = k*area/dx
-         as = k*area/dx
-         an = k*area/dx
+         aw = Fx*dy
+         ae = 0.
+         as = Fy*dx
+         an = 0.
          Sp = 0.
          Su = 0.
          ap = aw + ae + as + an - Sp
@@ -160,27 +160,27 @@ do while (resid >= .001)
          a(jj) = -as
          b(jj) =  ap
          c(jj) = -an
-         d(jj) =  Su + ae*T(jj,ii+1) + aw*T(jj,ii-1)
+         d(jj) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
       end do
       !...North boundary
-      aw =  k*area/dx
-      ae =  k*area/dx
-      as =  k*area/dx
+      aw =  Fx*dy
+      ae =  0.
+      as =  Fy*dx
       an =  0.
-      Sp = -2.*k*area/dx
-      Su =  2.*k*area*Tn/dx
+      Sp =  0.
+      Su =  Fy*dx*phiN
       ap = aw + ae + as + an - Sp
       !
       a(JL) = -as
       b(JL) =  ap
       c(JL) = -an
-      d(JL) =  Su + ae*T(jj,ii+1) + aw*T(jj,ii-1)
+      d(JL) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
       !
       !...solve N-S system with the TDMA
       !
-      call thomas(JL,a,b,c,d,Tsol)
+      call thomas(JL,a,b,c,d,phisol)
       !...Store temperature solution
-      T(:,ii) = Tsol
+      phi(:,ii) = phisol
    end do
    !-----------------------------------------------------------------------!
    !
@@ -189,56 +189,56 @@ do while (resid >= .001)
    !-----------------------------------------------------------------------!
    !
    !   SE Corner
-   aw = k*area/dx
+   aw = Fx*dy
    ae = 0.
    as = 0.
-   an = k*area/dx
-   Sp = 0.
-   Su = 0.
+   an = 0.
+   Sp = -Fy*dx
+   Su = Fy*dx*phiS + Fx*dy*phiE
    ap = aw + ae + as + an - Sp
    !
    a(1) = -as
    b(1) =  ap
    c(1) = -an
-   d(1) =  Su + aw*T(1,IL-1)
+   d(1) =  Su + aw*phi(1,IL-1)
    !
    do jj = 2,JL-1
-      aw = k*area/dx
+      aw = Fx*dy
       ae = 0.
-      as = k*area/dx
-      an = k*area/dx
+      as = Fy*dx
+      an = 0.
       Sp = 0.
-      Su = 0.
+      Su = Fx*dy*phiE
       ap = aw + ae + as + an - Sp
       !
       a(jj) = -as
       b(jj) =  ap
       c(jj) = -an
-      d(jj) =  Su + aw*T(jj,IL-1)
+      d(jj) =  Su + aw*phi(jj,IL-1)
    end do
    !...NE corner
-   aw =  k*area/dx
+   aw =  Fx*dy
    ae =  0.
-   as =  k*area/dx
+   as =  Fy*dx
    an =  0.
-   Sp = -2.*k*area/dx
-   Su =  2.*k*area*Tn/dx
+   Sp =  0.
+   Su =  Fx*dy*phiE + Fy*dx*phiN
    ap =  aw + ae + as + an - Sp
    !
    a(JL) = -as
    b(JL) =  ap
    c(JL) = -an
-   d(JL) =  Su + aw*T(JL,IL-1)
+   d(JL) =  Su + aw*phi(JL,IL-1)
    !
    !...solve system with the TDMA
    !
-   call thomas(JL,a,b,c,d,Tsol)
+   call thomas(JL,a,b,c,d,phi)
    !...Store N-S temperature solution
-   T(:,IL) = Tsol
+   phi(:,IL) = phisol
    !
    !...Recompute the error, increment the iteration
    !
-   resid = maxval(abs(T - Tprev))
+   resid = maxval(abs(phi - phiprev))
    iter  = iter + 1
    write(6,401)iter,resid
 end do
@@ -249,8 +249,8 @@ call cpu_time(t2)
 !
 !--------------------------------------------------------------------------!
 open(unit=7,file='plate_temp.dat',ACTION="write", STATUS="replace")
-do jj = JL,1,-1
-   write(7,'(1000f12.5)') (T(jj,ii),ii=1,IL)
+do jj = 1,JL
+   write(7,'(1000f12.5)') (phi(jj,ii),ii=1,IL)
 end do
 write(6,201)t2 - t1
 201 format(3x,f12.5)
