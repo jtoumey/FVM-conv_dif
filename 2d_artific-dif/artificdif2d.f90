@@ -19,7 +19,7 @@ PROGRAM ARTIFICDIF2D
 IMPLICIT NONE
 !
 integer IL,JL,ii,jj,kk,iter
-parameter (IL=100,JL=100)
+parameter (IL=1000,JL=1000)
 real dx,dy,xmax,ymax,x(IL),y(JL)
 real rho,u,v
 real phiW,phiN,phiE,phiS,Fx,Fy
@@ -65,7 +65,7 @@ v   = 2.
 !
 Fx = rho*u
 Fy = rho*v
-phi = 0.
+phi = 180.
 !--------------------------------------------------------------------------!
 !
 !...Begin outer WHILE iterative loop 
@@ -232,7 +232,7 @@ do while (resid >= .00000001)
    !
    !...solve system with the TDMA
    !
-   call thomas(JL,a,b,c,d,phi)
+   call thomas(JL,a,b,c,d,phisol)
    !...Store N-S temperature solution
    phi(:,IL) = phisol
    !
