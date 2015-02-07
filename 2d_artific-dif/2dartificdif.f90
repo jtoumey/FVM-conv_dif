@@ -1,29 +1,28 @@
 !**************************************************************************!
 !                                                                          !
-!  Module:       DIFFUSION2D.F90                                           !
+!  Module:       2DARTIFICDIF.F90                                          !
 !                                                                          !
 !  Programmer:   Julian M. Toumey                                          !
 !                Madison, WI                                               !
 !                                                                          !
-!  Date:         January 2015                                              !
+!  Date:         February 2015                                             !
 !                                                                          !
 !  Language:     FORTRAN90                                                 !
 !                                                                          !
-!  Description:  This code solves source-free heat conduction in a 2-D     !
-!                plate. The method follows example 7.2 in Versteeg and     !
-!                Malalasekera, 2nd ed. The code assumes temporarily        !
-!                constant T_E and T_W values and solves along N-S lines    !
-!                using the Thomas algorithm.                               !
+!  Description:  This code solves source-free pure convection in a 2-D     !
+!                domain. The flow direction is 45* from the horizontal     !
+!                in order to maximize the artificial diffusion term for    !
+!                comparting discretization schemes.                        !
 !                                                                          !
 !**************************************************************************!
-PROGRAM DIFFUSION2D
+PROGRAM 2DARTIFICDIF
 IMPLICIT NONE
 !
 integer IL,JL,ii,jj,kk,iter
 parameter (IL=10,JL=10)
 real dx,dy,xmax,ymax,x(IL),y(JL)
 real rho,u,v
-real phiA,phiB,Fx,Fy
+real phiW,phiN,phiE,phiS,Fx,Fy
 real aw,ae,as,an,Su,Sp,ap
 real a(JL),b(JL),c(JL),d(JL)
 real phisol(JL),resid
@@ -34,6 +33,13 @@ real t1,t2
 !
 resid = 1000.
 iter  = 0.
+!
+!...
+!
+phiW = 100.
+phiN = 100.
+phiE = 0.
+phiS = 0.
 !
 !...set up the grid
 !
@@ -77,17 +83,17 @@ do while (resid >= .001)
    !
    !   SW Corner
    aw = 0.
-   ae = k*area/dx
+   ae = 0.
    as = 0.
-   an = k*area/dx
-   Sp = 0.
-   Su = area*qw
+   an = 0.
+   Sp = -(Fx*dy + Fy*dx)
+   Su = Fx*dy*phiW + Fy*dx*phiS
    ap = aw + ae + as + an - Sp
    !
    a(1) = -as
    b(1) =  ap
    c(1) = -an
-   d(1) =  Su + ae*T(1,2)
+   d(1) =  Su
    !   West Interior cells
    do jj = 2,JL-1
       aw = 0.
