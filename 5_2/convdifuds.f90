@@ -38,7 +38,7 @@ real phi_at(n)
 !   Density [kg/m^3], velocity [m/s], diffusion coeff [kg/m.s]
 !
 rho   = 1.
-u     = 2.5
+u     = 0.1
 gamma = 0.1
 phiA  = 1.
 phiB  = 0.
