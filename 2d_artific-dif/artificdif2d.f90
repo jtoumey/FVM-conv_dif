@@ -61,11 +61,11 @@ end do
 !
 rho = 1.
 u   = 2.
-v   = 2. 
+v   = 2.
 !
 Fx = rho*u
 Fy = rho*v
-phi = 180.
+phi = 0.
 !--------------------------------------------------------------------------!
 !
 !...Begin outer WHILE iterative loop 
