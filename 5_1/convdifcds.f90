@@ -13,7 +13,7 @@
 !                property "phi" in a velocity field "u". The method        !
 !                follows example 5.1 in Versteeg and Malalasekera, 2nd ed. !
 !                The boundary conditions are phi_0 = 1 and phi_L = 0.      !
-!                We use the Central differencing scheme for both the       !
+!                We use the Central Differencing scheme for both the       !
 !                convective and diffusive terms.                           !
 !                                                                          !
 !                Cases                                                     !
