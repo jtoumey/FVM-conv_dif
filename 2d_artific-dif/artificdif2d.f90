@@ -12,7 +12,7 @@
 !  Description:  This code solves source-free pure convection in a 2-D     !
 !                domain. The flow direction is 45* from the horizontal     !
 !                in order to maximize the artificial diffusion term for    !
-!                comparting discretization schemes.                        !
+!                comparing discretization schemes.                         !
 !                                                                          !
 !**************************************************************************!
 PROGRAM ARTIFICDIF2D
@@ -34,7 +34,7 @@ real t1,t2
 resid = 1000.
 iter  = 0.
 !
-!...
+!...Boundary conditions -- temperature [*C]
 !
 phiW = 100.
 phiN = 100.
@@ -56,7 +56,7 @@ do jj = 2,JL
 end do
 !
 !...physical properties
-!   West heat flux [W/m^2], therm. conduct. [W/m.K], North fixed temp [*C]
+!   density [kg/m^3], velocity [m/s], convective mass flux per unit area F
 !   plate thickness 1 cm, area [m^2], initial temperature 0 [*C] everywhere
 !
 rho = 1.
