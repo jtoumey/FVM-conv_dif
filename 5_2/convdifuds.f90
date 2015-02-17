@@ -13,7 +13,7 @@
 !                property "phi" in a velocity field "u". The method        !
 !                follows example 5.2 in Versteeg and Malalasekera, 2nd ed. !
 !                The boundary conditions are phi_0 = 1 and phi_L = 0.      !
-!                We use the Upwind difference scheme for the convective    !
+!                We use the Upwind Difference scheme for the convective    !
 !                term and the Central Difference scheme for the diffusive  !
 !                term.                                                     !
 !                                                                          !
