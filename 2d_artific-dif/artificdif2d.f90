@@ -289,11 +289,14 @@ call cpu_time(t2)
 !...Write the results to a file
 !
 !--------------------------------------------------------------------------!
-open(unit=7,file='plate_temp.dat',ACTION="write", STATUS="replace")
-do jj = 1,JL
-   write(7,'(1000f12.5)') (phi(jj,ii),ii=1,IL)
+open(unit=7,file='phi_distr.dat',ACTION="write", STATUS="replace")
+do ii = 1,IL
+   do jj = 1,JL
+      write(7,301)x(ii),y(jj),phi(jj,ii)
+   end do
 end do
 write(6,201)t2 - t1
 201 format(3x,f12.5)
+301 format(3x,f12.5,3x,f12.5,3x,f12.5)
 401 format(3x,'*** Iteration : ',i8,3x,'Residual :',f12.5,'  ***')
 END
