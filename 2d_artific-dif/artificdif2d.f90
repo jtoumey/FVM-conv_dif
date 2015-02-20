@@ -28,11 +28,13 @@ real a(JL),b(JL),c(JL),d(JL)
 real phisol(JL),resid
 real, dimension(JL,IL) :: phi,phiprev
 real t1,t2
+real Frp
 !
 !...Parameters for iteration
 !
 resid = 1000.
 iter  = 0.
+Frp   = 0.
 !
 !...Boundary conditions -- temperature [*C]
 !
@@ -51,7 +53,7 @@ end do
 !
 ymax = 1
 dy   = ymax/float(JL)
-do jj = 2,JL
+do jj = 1,JL
    y(jj) = (jj-0.5)*dy
 end do
 !
@@ -63,8 +65,8 @@ rho = 1.
 u   = 2.
 v   = 2.
 !
-Fx = rho*u
-Fy = rho*v
+Fx  = rho*u
+Fy  = rho*v
 phi = 0.
 !--------------------------------------------------------------------------!
 !
