@@ -74,7 +74,7 @@ phi = 0.
 !
 !--------------------------------------------------------------------------!
 call cpu_time(t1)
-do while (resid >= .000001)
+do while (resid >= .001)
    !   save previous phi distribution to compare errors
    phiprev = phi
    !************************************************************************
