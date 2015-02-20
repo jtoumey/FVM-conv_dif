@@ -103,8 +103,8 @@ do while (resid >= .000001)
    c(1) = -an
    d(1) =  Su
    !
-   resid = resid + abs(ae*T(1,2) + an*T(2,1) + Su - ap*T(1,1))
-   Frp = Frp + abs(ap*T(1,1))
+   resid = resid + abs(ae*phi(1,2) + an*phi(2,1) + Su - ap*phi(1,1))
+   Frp = Frp + abs(ap*phi(1,1))
    !   West Interior cells
    do jj = 2,JL-1
       aw = 0.
@@ -120,8 +120,8 @@ do while (resid >= .000001)
       c(jj) = -an
       d(jj) =  Su + ae*phi(jj,2)
       !
-      resid = resid + abs(ae*T(jj,2) + an*T(jj+1,1) + as*T(jj-1,1) + Su - ap*T(jj,1))
-      Frp = Frp + abs(ap*T(jj,1))
+      resid = resid + abs(ae*phi(jj,2) + an*phi(jj+1,1) + as*phi(jj-1,1) + Su - ap*phi(jj,1))
+      Frp = Frp + abs(ap*phi(jj,1))
    end do
    !   NW corner
    aw =  0.
@@ -137,8 +137,8 @@ do while (resid >= .000001)
    c(JL) = -an
    d(JL) =  Su + ae*phi(JL,2)
    !
-   resid = resid + abs(ae*T(JL,2) + as*T(JL-1,1) + Su - ap*T(JL,1))
-   Frp = Frp + abs(ap*T(JL,1))
+   resid = resid + abs(ae*phi(JL,2) + as*phi(JL-1,1) + Su - ap*phi(JL,1))
+   Frp = Frp + abs(ap*phi(JL,1))
    !
    !...solve N-S system with the TDMA
    !
@@ -165,8 +165,8 @@ do while (resid >= .000001)
       c(1) = -an
       d(1) =  Su + ae*phi(1,ii+1) + aw*phi(1,ii-1)
       !
-      resid = resid + abs(aw*T(1,ii-1) + ae*T(1,ii+1) + an*T(2,ii) + Su - ap*T(1,ii))
-      Frp = Frp + abs(ap*T(1,ii))
+      resid = resid + abs(aw*phi(1,ii-1) + ae*phi(1,ii+1) + an*phi(2,ii) + Su - ap*phi(1,ii))
+      Frp = Frp + abs(ap*phi(1,ii))
       !
       do jj = 2,JL-1
          aw = Fx*dy
@@ -182,8 +182,8 @@ do while (resid >= .000001)
          c(jj) = -an
          d(jj) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
          !
-         resid = resid + abs(aw*T(jj,ii-1) + ae*T(jj,ii+1) + an*T(jj+1,ii) + as*T(jj-1,ii) + Su - ap*T(jj,ii))
-         Frp = Frp + abs(ap*T(jj,ii))
+         resid = resid + abs(aw*phi(jj,ii-1) + ae*phi(jj,ii+1) + an*phi(jj+1,ii) + as*phi(jj-1,ii) + Su - ap*phi(jj,ii))
+         Frp = Frp + abs(ap*phi(jj,ii))
          !
       end do
       !...North boundary
@@ -200,8 +200,8 @@ do while (resid >= .000001)
       c(JL) = -an
       d(JL) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
       !
-      resid = resid + abs(aw*T(JL,ii-1) + ae*T(JL,ii+1) + as*T(JL-1,ii) + Su - ap*T(JL,ii))
-      Frp = Frp + abs(ap*T(JL,ii))
+      resid = resid + abs(aw*phi(JL,ii-1) + ae*phi(JL,ii+1) + as*phi(JL-1,ii) + Su - ap*phi(JL,ii))
+      Frp = Frp + abs(ap*phi(JL,ii))
       !
       !...solve N-S system with the TDMA
       !
@@ -229,8 +229,8 @@ do while (resid >= .000001)
    c(1) = -an
    d(1) =  Su + aw*phi(1,IL-1)
    !
-   resid = resid + abs(aw*T(1,IL-1) + an*T(2,IL) + Su - ap*T(JL,IL))
-   Frp = Frp + abs(ap*T(JL,IL))
+   resid = resid + abs(aw*phi(1,IL-1) + an*phi(2,IL) + Su - ap*phi(JL,IL))
+   Frp = Frp + abs(ap*phi(JL,IL))
    !
    do jj = 2,JL-1
       aw = Fx*dy
@@ -246,8 +246,8 @@ do while (resid >= .000001)
       c(jj) = -an
       d(jj) =  Su + aw*phi(jj,IL-1)
       !
-      resid = resid + abs(aw*T(jj,IL-1) + an*T(jj+1,IL) + as*T(jj-1,IL) + Su - ap*T(jj,IL))
-      Frp = Frp + abs(ap*T(jj,IL))
+      resid = resid + abs(aw*phi(jj,IL-1) + an*phi(jj+1,IL) + as*phi(jj-1,IL) + Su - ap*phi(jj,IL))
+      Frp = Frp + abs(ap*phi(jj,IL))
       !
    end do
    !...NE corner
@@ -264,8 +264,8 @@ do while (resid >= .000001)
    c(JL) = -an
    d(JL) =  Su + aw*phi(JL,IL-1)
    !
-   resid = resid + abs(aw*T(JL,IL-1) + as*T(JL-1,IL) + Su - ap*T(JL,IL))
-   Frp = Frp + abs(ap*T(JL,IL))
+   resid = resid + abs(aw*phi(JL,IL-1) + as*phi(JL-1,IL) + Su - ap*phi(JL,IL))
+   Frp = Frp + abs(ap*phi(JL,IL))
    !
    !...solve system with the TDMA
    !
