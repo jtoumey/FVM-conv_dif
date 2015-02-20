@@ -74,9 +74,15 @@ phi = 0.
 !
 !--------------------------------------------------------------------------!
 call cpu_time(t1)
-do while (resid >= .00000001)
-   !   save previous temperature distribution to compare errors
+do while (resid >= .000001)
+   !   save previous phi distribution to compare errors
    phiprev = phi
+   !************************************************************************
+   !
+   !   Set the residual to zero to begin the summation. 
+   !
+   !************************************************************************
+   resid = 0.
    !-----------------------------------------------------------------------!
    !
    !...West Cells
@@ -96,6 +102,9 @@ do while (resid >= .00000001)
    b(1) =  ap
    c(1) = -an
    d(1) =  Su
+   !
+   resid = resid + abs(ae*T(1,2) + an*T(2,1) + Su - ap*T(1,1))
+   Frp = Frp + abs(ap*T(1,1))
    !   West Interior cells
    do jj = 2,JL-1
       aw = 0.
@@ -110,6 +119,9 @@ do while (resid >= .00000001)
       b(jj) =  ap
       c(jj) = -an
       d(jj) =  Su + ae*phi(jj,2)
+      !
+      resid = resid + abs(ae*T(jj,2) + an*T(jj+1,1) + as*T(jj-1,1) + Su - ap*T(jj,1))
+      Frp = Frp + abs(ap*T(jj,1))
    end do
    !   NW corner
    aw =  0.
@@ -125,10 +137,13 @@ do while (resid >= .00000001)
    c(JL) = -an
    d(JL) =  Su + ae*phi(JL,2)
    !
+   resid = resid + abs(ae*T(JL,2) + as*T(JL-1,1) + Su - ap*T(JL,1))
+   Frp = Frp + abs(ap*T(JL,1))
+   !
    !...solve N-S system with the TDMA
    !
    call thomas(JL,a,b,c,d,phisol)
-   !...Store temperature solution
+   !...Store phi solution
    phi(:,1) = phisol
    !-----------------------------------------------------------------------!
    !
@@ -150,6 +165,9 @@ do while (resid >= .00000001)
       c(1) = -an
       d(1) =  Su + ae*phi(1,ii+1) + aw*phi(1,ii-1)
       !
+      resid = resid + abs(aw*T(1,ii-1) + ae*T(1,ii+1) + an*T(2,ii) + Su - ap*T(1,ii))
+      Frp = Frp + abs(ap*T(1,ii))
+      !
       do jj = 2,JL-1
          aw = Fx*dy
          ae = 0.
@@ -163,6 +181,10 @@ do while (resid >= .00000001)
          b(jj) =  ap
          c(jj) = -an
          d(jj) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
+         !
+         resid = resid + abs(aw*T(jj,ii-1) + ae*T(jj,ii+1) + an*T(jj+1,ii) + as*T(jj-1,ii) + Su - ap*T(jj,ii))
+         Frp = Frp + abs(ap*T(jj,ii))
+         !
       end do
       !...North boundary
       aw =  Fx*dy
@@ -177,6 +199,9 @@ do while (resid >= .00000001)
       b(JL) =  ap
       c(JL) = -an
       d(JL) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
+      !
+      resid = resid + abs(aw*T(JL,ii-1) + ae*T(JL,ii+1) + as*T(JL-1,ii) + Su - ap*T(JL,ii))
+      Frp = Frp + abs(ap*T(JL,ii))
       !
       !...solve N-S system with the TDMA
       !
@@ -204,6 +229,9 @@ do while (resid >= .00000001)
    c(1) = -an
    d(1) =  Su + aw*phi(1,IL-1)
    !
+   resid = resid + abs(aw*T(1,IL-1) + an*T(2,IL) + Su - ap*T(JL,IL))
+   Frp = Frp + abs(ap*T(JL,IL))
+   !
    do jj = 2,JL-1
       aw = Fx*dy
       ae = 0.
@@ -217,6 +245,10 @@ do while (resid >= .00000001)
       b(jj) =  ap
       c(jj) = -an
       d(jj) =  Su + aw*phi(jj,IL-1)
+      !
+      resid = resid + abs(aw*T(jj,IL-1) + an*T(jj+1,IL) + as*T(jj-1,IL) + Su - ap*T(jj,IL))
+      Frp = Frp + abs(ap*T(jj,IL))
+      !
    end do
    !...NE corner
    aw =  Fx*dy
@@ -232,6 +264,9 @@ do while (resid >= .00000001)
    c(JL) = -an
    d(JL) =  Su + aw*phi(JL,IL-1)
    !
+   resid = resid + abs(aw*T(JL,IL-1) + as*T(JL-1,IL) + Su - ap*T(JL,IL))
+   Frp = Frp + abs(ap*T(JL,IL))
+   !
    !...solve system with the TDMA
    !
    call thomas(JL,a,b,c,d,phisol)
@@ -240,7 +275,11 @@ do while (resid >= .00000001)
    !
    !...Recompute the error, increment the iteration
    !
-   resid = maxval(abs(phi - phiprev))
+   if (iter == 0) then
+      Frp = 1.
+   end if
+   resid = resid/Frp
+   !
    iter  = iter + 1
    write(6,401)iter,resid
 end do
