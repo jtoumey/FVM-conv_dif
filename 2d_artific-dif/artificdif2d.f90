@@ -19,7 +19,7 @@ PROGRAM ARTIFICDIF2D
 IMPLICIT NONE
 !
 integer IL,JL,ii,jj,kk,iter
-parameter (IL=1000,JL=1000)
+parameter (IL=100,JL=100)
 real dx,dy,xmax,ymax,x(IL),y(JL)
 real rho,u,v
 real phiW,phiN,phiE,phiS,Fx,Fy
@@ -294,6 +294,7 @@ do ii = 1,IL
    do jj = 1,JL
       write(7,301)x(ii),y(jj),phi(jj,ii)
    end do
+   write(7,*)
 end do
 write(6,201)t2 - t1
 201 format(3x,f12.5)
