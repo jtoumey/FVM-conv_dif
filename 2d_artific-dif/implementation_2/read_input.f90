@@ -1,16 +1,18 @@
-SUBROUTINE READ_INPUT(xmax,ymax,nx,ny)
+SUBROUTINE READ_INPUT(xmax,ymax,nx,ny,rho,u,v)
 IMPLICIT NONE
 !
 ! variables passed in, to be modified
 real, intent(out) :: xmax, ymax
 integer, intent(out) :: nx, ny
+real, intent(out) :: rho, u, v
+!
 ! variables used only in this subroutine
 character(len=25 ) :: grid_file_name
 character(len=100) :: line_buffer
 integer iblnk,io_status
 !
 io_status = 1
-grid_file_name = "grid.dat"
+grid_file_name = "input.dat"
 write(*,*)grid_file_name
 
 open(unit=2,file = grid_file_name) 
@@ -22,6 +24,9 @@ do while (io_status .GT. 0)
    read(2,*)line_buffer, ymax
    read(2,*)line_buffer, nx 
    read(2,*)line_buffer, ny 
+   read(2,*)line_buffer, rho
+   read(2,*)line_buffer, u 
+   read(2,*)line_buffer, v 
    !
 end do
 write(*,*)'SUCCESSFULLY READ THE INPUT FILE.'

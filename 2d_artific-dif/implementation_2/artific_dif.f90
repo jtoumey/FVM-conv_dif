@@ -24,10 +24,11 @@ IMPLICIT NONE
 !
 integer nx,ny,ii,jj,kk,iter
 real dx,dy,xmax,ymax
+real rho,u,v
 real, dimension(:), allocatable :: x,y
 !
-call read_input(xmax,ymax,nx,ny)
-write(*,*)xmax,ymax,nx,ny
+call read_input(xmax,ymax,nx,ny,rho,u,v)
+write(*,*)xmax,ymax,nx,ny,rho,u,v
 !
 !   allocate memory for the coordinates of cell centers
 !
