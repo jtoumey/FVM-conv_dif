@@ -22,4 +22,10 @@
 PROGRAM ARTIFIC_DIF
 IMPLICIT NONE
 !
+integer IL,JL,ii,jj,kk,iter
+real dx,dy,xmax,ymax
+double precision, dimension(:), allocatable :: x,y
+
+
+call read_input(xmax,ymax,IL,JL)
 END
