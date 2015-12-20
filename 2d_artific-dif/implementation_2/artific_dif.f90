@@ -25,8 +25,8 @@ IMPLICIT NONE
 integer nx,ny,ii,jj,kk,iter
 real dx,dy,xmax,ymax
 double precision, dimension(:), allocatable :: x,y
-
-
+!
+write(*,*)'make'
 call read_input(xmax,ymax,nx,ny)
 write(*,*)xmax,ymax,nx,ny
 END
