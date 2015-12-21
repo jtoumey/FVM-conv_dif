@@ -1,10 +1,12 @@
-SUBROUTINE CALC_FVM_COEFFICIENTS(np,an,as,aw,ae)
+SUBROUTINE CALC_FVM_COEFFICIENTS(np)
+!
+use dynamic_coeff
 !
 IMPLICIT NONE
 !
 ! variables passed in
 integer, intent(out) :: np
-real, intent(inout) :: an(:),as(:),aw(:),ae(:)
+!real, intent(inout) :: an(:),as(:),aw(:),ae(:)
 !
 ! variables used only in this subroutine
 integer ii

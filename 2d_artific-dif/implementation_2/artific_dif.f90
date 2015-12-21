@@ -20,14 +20,20 @@
 !                                                                          !
 !**************************************************************************!
 PROGRAM ARTIFIC_DIF
+use dynamic_coeff
 IMPLICIT NONE
+!
+interface
+   subroutine calc_fvm_coefficients(np)
+   end subroutine calc_fvm_coefficients
+end interface
 !
 integer nx,ny,ii,jj,kk,iter
 real dx,dy,xmax,ymax
 real rho,u,v
 real, dimension(:), allocatable :: x,y
 integer np
-real, dimension(:), allocatable :: an,as,aw,ae
+!real, dimension(:), allocatable :: an,as,aw,ae
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -53,7 +59,7 @@ end do
 !
 !   allocate space for coefficent vectors
 allocate(an(np),as(np),aw(np),ae(np))
-call calc_fvm_coefficients(np,an,as,aw,ae)
+call calc_fvm_coefficients(np)
 
 
 !
