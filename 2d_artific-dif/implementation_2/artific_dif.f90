@@ -53,10 +53,11 @@ end do
 !
 !   allocate space for coefficent vectors
 allocate(an(np),as(np),aw(np),ae(np))
-call calc_fvm_coefficients(an,as,aw,ae)
+call calc_fvm_coefficients(np,an,as,aw,ae)
 
 
 !
 deallocate(x,y)
+deallocate(an,as,aw,ae)
 !
 END
