@@ -24,13 +24,14 @@ use dynamic_coeff
 IMPLICIT NONE
 !
 interface
-   subroutine calc_fvm_coefficients(np)
+   subroutine calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
    end subroutine calc_fvm_coefficients
 end interface
 !
 integer nx,ny,ii,jj,kk,iter
 real dx,dy,xmax,ymax
 real rho,u,v
+real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
 !real, dimension(:), allocatable :: an,as,aw,ae
@@ -59,8 +60,10 @@ end do
 !
 !   allocate space for coefficent vectors
 allocate(an(np),as(np),aw(np),ae(np))
-call calc_fvm_coefficients(np)
-
+call calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
+do ii = 1,np
+   write(*,*)an(ii)
+end do
 
 !
 deallocate(x,y)
