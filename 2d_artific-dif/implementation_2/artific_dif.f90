@@ -26,6 +26,8 @@ integer nx,ny,ii,jj,kk,iter
 real dx,dy,xmax,ymax
 real rho,u,v
 real, dimension(:), allocatable :: x,y
+integer np
+real, dimension(:), allocatable :: an,as,aw,ae
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -36,6 +38,7 @@ allocate(x(nx),y(ny))
 !
 ! setup grid
 !
+np = nx*ny
 dx = xmax/float(nx)
 do ii = 1,nx
    x(ii) = (ii - 0.5)*dx
@@ -45,6 +48,13 @@ dy = ymax/float(ny)
 do jj = 1,ny
    y(jj) = (jj - 0.5)*dy
 end do
+!
+!   calculate coefficients
+!
+!   allocate space for coefficent vectors
+allocate(an(np),as(np),aw(np),ae(np))
+call calc_fvm_coefficients(an,as,aw,ae)
+
 
 !
 deallocate(x,y)

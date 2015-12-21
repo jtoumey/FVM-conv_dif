@@ -46,6 +46,6 @@ write(*,*)'SUCCESSFULLY READ THE INPUT FILE.'
 !read(2,*)nx
 !read(2,*)ny
 
-
-
+close(2)
+!
 END SUBROUTINE READ_INPUT
