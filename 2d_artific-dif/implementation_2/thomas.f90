@@ -22,8 +22,8 @@
 !                                                                         !
 !*************************************************************************!
 SUBROUTINE THOMAS(n,a,b,c,d,phi)
-use dynamic_coeff
 implicit none
+!
 integer i,n
 real a(n),b(n),c(n),d(n),phi(n)
 !
