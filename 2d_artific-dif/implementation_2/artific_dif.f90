@@ -31,8 +31,6 @@ real rho,u,v
 real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
-integer test1
-!real, dimension(:), allocatable :: an,as,aw,ae
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -66,7 +64,6 @@ Fy = rho * v
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(phi(np),phi_prev(np))
 !
-!call dummy2(np,an)
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,ap)
 do ii = 1,np
    write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii)   

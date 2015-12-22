@@ -13,12 +13,5 @@ integer ii,jj
 !   O(n) time. Note that W and E coefficients are treated explicity (calculated from \phi
 !   at the previous iteration).
 !
-do ii = 1,nx
-   
-
-end do
-
-
-
 
 END SUBROUTINE CREATE_ONED_ARRAYS
