@@ -66,8 +66,11 @@ Fy = rho * v
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(phi(np),phi_prev(np))
 !
-call dummy2(np,an)
-!call calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
+!call dummy2(np,an)
+call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,ap)
+do ii = 1,np
+   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii)   
+end do
 !
 !call thomas(ny,as,ap,an,phi)
 !
@@ -75,4 +78,5 @@ deallocate(x,y)
 deallocate(an,as,aw,ae)
 deallocate(ap)
 !
+301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
 END
