@@ -5,7 +5,7 @@ OBJ_FILES = $(addprefix bin/,$(notdir $(SRC_FILES:.f90=.o)))
 ./bin/artific_dif: $(OBJ_FILES)
 	gfortran -o $@ $^
 
-./bin/%.o ./bin%.mod: %.f90
+./bin/%.o: %.f90
 	gfortran -c -o $@ $<
 
 # Utility targets

@@ -1,5 +1,4 @@
 SUBROUTINE CREATE_ONED_ARRAYS(np,nx,ny)
-use dynamic_coeff
 !
 IMPLICIT NONE
 !
