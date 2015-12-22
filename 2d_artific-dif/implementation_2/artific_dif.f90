@@ -20,20 +20,18 @@
 !                                                                          !
 !**************************************************************************!
 PROGRAM ARTIFIC_DIF
-use dynamic_coeff
 IMPLICIT NONE
 !
-interface
-   subroutine calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
-   end subroutine calc_fvm_coefficients
-end interface
-!
 integer nx,ny,ii,jj,kk,iter
+real, dimension(:), save, allocatable :: ap
+real, dimension(:), allocatable :: an,as,aw,ae
+real, dimension(:), allocatable :: phi,phi_prev
 real dx,dy,xmax,ymax
 real rho,u,v
 real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
+integer test1
 !real, dimension(:), allocatable :: an,as,aw,ae
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
@@ -68,11 +66,13 @@ Fy = rho * v
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(phi(np),phi_prev(np))
 !
-call calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
+call dummy2(np,an)
+!call calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
 !
 !call thomas(ny,as,ap,an,phi)
 !
 deallocate(x,y)
 deallocate(an,as,aw,ae)
+deallocate(ap)
 !
 END
