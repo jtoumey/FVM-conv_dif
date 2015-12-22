@@ -56,14 +56,17 @@ do jj = 1,ny
    y(jj) = (jj - 0.5)*dy
 end do
 !
+!
+!  Calculate fluxes 
+!
+Fx = rho * u
+Fy = rho * v
+!
 !   calculate coefficients
 !
 !   allocate space for coefficent vectors
-allocate(an(np),as(np),aw(np),ae(np))
+allocate(an(np),as(np),aw(np),ae(np),ap(np))
 call calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
-do ii = 1,np
-   write(*,*)an(ii)
-end do
 
 !
 deallocate(x,y)

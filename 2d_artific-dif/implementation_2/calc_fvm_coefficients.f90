@@ -11,15 +11,13 @@ real, intent(inout) :: dx, dy, Fx, Fy
 integer ii
 !
 do ii = 1,np
-   an(ii + nx)
-
-
-end do
-do ii = 1,np
+   ae(ii) = 0.
    aw(ii) = Fx*dy
-   an(ii) = Fy*dx
+   an(ii) = 0.
+   as(ii) = Fy*dx
    ! 
-   
+   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii)
+   ! 
 end do
 !
 END SUBROUTINE CALC_FVM_COEFFICIENTS
