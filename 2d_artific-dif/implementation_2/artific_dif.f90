@@ -66,8 +66,11 @@ Fy = rho * v
 !
 !   allocate space for coefficent vectors
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
+allocate(phi(np),phi_prev(np))
+!
 call calc_fvm_coefficients(np,nx,ny,dx,dy,Fx,Fy)
-
+!
+call thomas(ny,as,ap,an,phi)
 !
 deallocate(x,y)
 deallocate(an,as,aw,ae)

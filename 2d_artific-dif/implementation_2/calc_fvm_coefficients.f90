@@ -10,6 +10,8 @@ real, intent(inout) :: dx, dy, Fx, Fy
 ! variables used only in this subroutine
 integer ii
 !
+!...caculate neighbor coefficients using upwind scheme
+!
 do ii = 1,np
    ae(ii) = 0.
    aw(ii) = Fx*dy
