@@ -5,7 +5,7 @@
 !  Programmer:   Julian M. Toumey                                          !
 !                Madison, WI                                               !
 !                                                                          !
-!  Date:         Decemver 2015                                             !
+!  Date:         December 2015                                             !
 !                                                                          !
 !  Language:     FORTRAN90                                                 !
 !                                                                          !
@@ -24,7 +24,7 @@ IMPLICIT NONE
 !
 integer nx,ny,ii,jj,kk,iter
 real, dimension(:), save, allocatable :: ap
-real, dimension(:), allocatable :: an,as,aw,ae
+real, dimension(:), allocatable :: an,as,aw,ae,Su,Sp
 real, dimension(:), allocatable :: phi,phi_prev
 real dx,dy,xmax,ymax
 real rho,u,v
@@ -62,9 +62,10 @@ Fy = rho * v
 !
 !   allocate space for coefficent vectors
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
+allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
 !
-call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,ap)
+call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,ap,Su,Sp)
 do ii = 1,np
    write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii)   
 end do
