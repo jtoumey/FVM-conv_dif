@@ -36,8 +36,8 @@ do ii = np,np-ny,-1
    Su(ii) = Su(ii) + 0.*Fx*dy 
 
 end do
-do ii = 1,np
-   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
-end do
+!do ii = 1,np
+!   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
+!end do
 !
 END SUBROUTINE SET_BOUNDARY_CONDITION

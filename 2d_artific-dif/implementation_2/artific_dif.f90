@@ -32,6 +32,7 @@ real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
 real :: tol,resid
+real, dimension(:), allocatable :: phi_sol
 !
 resid = 10
 !
@@ -70,19 +71,26 @@ allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
 phi = 0.
 phi_prev = 0.
+allocate(phi_sol(ny))
 !
 !
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
 call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
 !
-call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
-do ii = 1,np
-   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii)   
+!call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
+!
+write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
+write(*,*)'================================================================='
+do ii = 1,10
+   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
 end do
 !
-do jj = 1,np-ny,ny
-   call thomas(ny,-as(jj:jj+ny),ap(jj:jj+ny),-an(jj:jj+ny),Su(jj:jj+ny),phi(jj:jj+ny))
-end do
+!jj = 1
+!do jj = 1,np-ny,ny+1
+   !call thomas(ny,-as(jj:jj+ny-1),ap(jj:jj+ny-1),-an(jj:jj+ny-1),Su(jj:jj+ny-1),phi(jj:jj+ny-1))
+!call thomas(ny,-as(1:ny),ap(1:ny),-an(1:ny),Su(1:ny),phi_sol)
+call thomas(np,-as,ap,-an,Su,phi)
+!end do
 !
 write(*,*)'Solution:'
 do ii = 1,np
@@ -98,5 +106,5 @@ deallocate(x,y)
 deallocate(an,as,aw,ae)
 deallocate(ap)
 !
-301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
+301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
 END
