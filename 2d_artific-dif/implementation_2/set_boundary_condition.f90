@@ -1,4 +1,4 @@
-SUBROUTINE SET_BOUNDARY_CONDITION(np,nx,ny,Fx,Fy,dx,dy,an,as,aw,ae,Su,Sp)
+SUBROUTINE SET_BOUNDARY_CONDITION(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
 !
 IMPLICIT NONE
 !
@@ -7,6 +7,7 @@ integer, intent(inout) :: np,nx,ny
 real, intent(in) :: Fx,Fy,dx,dy
 real, dimension(:), intent(inout) :: an(np),as(np),aw(np),ae(np)
 real, dimension(:), intent(inout) :: Su(np),Sp(np)
+real, dimension(:), intent(inout) :: ap(np)
 !
 !   variables used only in this subroutine
 integer ii
@@ -34,6 +35,9 @@ do ii = np,np-ny,-1
    ae(ii) = 0.
    Su(ii) = Su(ii) + 0.*Fx*dy 
 
+end do
+do ii = 1,np
+   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
 end do
 !
 END SUBROUTINE SET_BOUNDARY_CONDITION

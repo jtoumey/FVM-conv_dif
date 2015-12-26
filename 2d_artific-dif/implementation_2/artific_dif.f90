@@ -31,7 +31,11 @@ real rho,u,v
 real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
+real :: tol,resid
 !
+resid = 10
+!
+tol = 0.01
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
 !
@@ -65,19 +69,31 @@ allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
 phi = 0.
+phi_prev = 0.
 !
-call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,ap,Su,Sp)
-call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,an,as,aw,ae,Su,Sp)
+!
+call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
+call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
+!
+call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
 do ii = 1,np
    write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii)   
 end do
 !
-call thomas(np,as,ap,an,Su,phi)
+do jj = 1,np-ny,ny
+   call thomas(ny,-as(jj:jj+ny),ap(jj:jj+ny),-an(jj:jj+ny),Su(jj:jj+ny),phi(jj:jj+ny))
+end do
 !
 write(*,*)'Solution:'
 do ii = 1,np
    write(*,*)phi(ii)
 end do
+
+phi_prev = phi
+
+!
+!   deallocate data
+!
 deallocate(x,y)
 deallocate(an,as,aw,ae)
 deallocate(ap)
