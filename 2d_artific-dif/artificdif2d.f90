@@ -19,7 +19,7 @@ PROGRAM ARTIFICDIF2D
 IMPLICIT NONE
 !
 integer IL,JL,ii,jj,kk,iter
-parameter (IL=100,JL=100)
+parameter (IL=10,JL=10)
 real dx,dy,xmax,ymax,x(IL),y(JL)
 real rho,u,v
 real phiW,phiN,phiE,phiS,Fx,Fy
@@ -97,6 +97,7 @@ do while (resid >= .001)
    Sp = -(Fx*dy + Fy*dx)
    Su = Fx*dy*phiW + Fy*dx*phiS
    ap = aw + ae + as + an - Sp
+   write(*,*)'SW aP: ',ap
    !
    a(1) = -as
    b(1) =  ap
