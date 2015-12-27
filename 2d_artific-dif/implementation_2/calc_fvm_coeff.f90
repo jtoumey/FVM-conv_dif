@@ -14,8 +14,6 @@ integer ii
 !...caculate neighbor coefficients using upwind scheme
 !
 do ii = 1,np
-   !   calculate the coefficients (*_c) as in the derivation
-   !
    !
    ae(ii) = 0.
    aw(ii) = Fx*dy

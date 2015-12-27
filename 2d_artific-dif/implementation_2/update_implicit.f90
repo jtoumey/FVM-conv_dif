@@ -9,7 +9,7 @@ real, dimension(:), intent(inout) :: aw(np),ae(np),Su(np),phi_prev(np)
 !   variables used only in this subroutine
 integer ii
 !
-!...caculate neighbor coefficients using upwind scheme
+!...calculate neighbor coefficients using upwind scheme
 !
 do ii = ny,np-ny
    Su(ii) = Su(ii) + aw(ii-ny)*phi_prev(ii-ny) + ae(ii+ny)*phi_prev(ii+ny)

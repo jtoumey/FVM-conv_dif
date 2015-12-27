@@ -12,13 +12,11 @@ real, dimension(:), intent(inout) :: ap(np)
 !   variables used only in this subroutine
 integer ii
 !
-
-!
 !   West boundary, running S to N
 do ii = 1,ny
    aw(ii) = 0.
    Su(ii) = Su(ii) + 100.*Fx*dy 
-
+   Sp(ii) = Sp(ii) -(Fx*dy)
 end do
 !   North boundary, running W to E 
 do ii = ny,np,ny
@@ -29,6 +27,7 @@ end do
 do ii = 1,np,ny
    as(ii) = 0.
    Su(ii) = Su(ii) + 0.*Fy*dx
+   Sp(ii) = Sp(ii) - (Fy*dx)
 end do
 !   East boundary, running S to N
 do ii = np,np-ny,-1
@@ -36,8 +35,8 @@ do ii = np,np-ny,-1
    Su(ii) = Su(ii) + 0.*Fx*dy 
 
 end do
-!do ii = 1,np
-!   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
-!end do
+do ii = 1,np
+   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
+end do
 !
 END SUBROUTINE SET_BOUNDARY_CONDITION
