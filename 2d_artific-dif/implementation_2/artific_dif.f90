@@ -31,6 +31,7 @@ real rho,u,v
 real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
+integer :: u_bound,l_bound
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -64,7 +65,7 @@ Fy = rho * v
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
-phi = 0.
+phi = 0.1
 phi_prev = 0.
 !
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
@@ -74,6 +75,9 @@ call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
 do ii = 1,np
    ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
 end do
+!Su(ny+1:2*ny) = 3.0
+Su(ny+1) = 3.0
+Su(2*ny) = 3.0
 !
 write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
 write(*,*)'================================================================='
@@ -93,8 +97,12 @@ do ii = 31,40
    write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
 end do
 !
-call thomas(np,-as,ap,-an,Su,phi)
-!end do
+!call thomas(np,-as,ap,-an,Su,phi)
+do kk = 1,nx
+   l_bound = (kk - 1)*ny + 1
+   u_bound = l_bound + ny - 1
+   call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su(l_bound:u_bound),phi(l_bound:u_bound))
+end do
 !
 write(*,*)'Solution:'
 do ii = 1,np
