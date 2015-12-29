@@ -12,8 +12,10 @@ integer ii
 !...calculate neighbor coefficients using upwind scheme
 !
 do ii = ny,np-ny
-   Su(ii) = Su(ii) + aw(ii-ny)*phi_prev(ii-ny) + ae(ii+ny)*phi_prev(ii+ny)
+   write(*,301)Su(ii),aw(ii+1-ny),phi_prev(ii+1-ny),ae(ii+ny),phi_prev(ii+ny)
+   Su(ii) = Su(ii) + aw(ii)*phi_prev(ii+1-ny) + ae(ii)*phi_prev(ii+ny)
 end do
-
+!
+301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x)
 !
 END SUBROUTINE UPDATE_IMPLICIT
