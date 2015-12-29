@@ -75,7 +75,6 @@ call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
 do ii = 1,np
    ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
 end do
-!Su(ny+1:2*ny) = 3.0
 !
 write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
 write(*,*)'================================================================='
