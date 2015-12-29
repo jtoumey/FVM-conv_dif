@@ -76,8 +76,6 @@ do ii = 1,np
    ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
 end do
 !Su(ny+1:2*ny) = 3.0
-Su(ny+1) = 3.0
-Su(2*ny) = 3.0
 !
 write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
 write(*,*)'================================================================='
@@ -102,6 +100,15 @@ do kk = 1,nx
    l_bound = (kk - 1)*ny + 1
    u_bound = l_bound + ny - 1
    call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su(l_bound:u_bound),phi(l_bound:u_bound))
+   phi_prev = phi 
+   call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
+   ! Test Print
+   write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
+   write(*,*)'================================================================='
+   do ii = 11,21
+      write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+   end do
+   write(*,*)'----//----'
 end do
 !
 write(*,*)'Solution:'
