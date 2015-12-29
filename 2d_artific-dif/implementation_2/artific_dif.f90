@@ -65,7 +65,7 @@ Fy = rho * v
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
-phi = 0.1
+phi = 0.
 phi_prev = 0.
 !
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
@@ -76,23 +76,23 @@ do ii = 1,np
    ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
 end do
 !
-write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
-write(*,*)'================================================================='
-do ii = 1,10
-   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-end do
-write(*,*)'----//----'
-do ii = 11,20
-   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-end do
-write(*,*)'----//----'
-do ii = 21,30
-   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-end do
-write(*,*)'----//----'
-do ii = 31,40
-   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-end do
+!write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
+!write(*,*)'================================================================='
+!do ii = 1,10
+!   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+!end do
+!write(*,*)'----//----'
+!do ii = 11,20
+ !  write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+!end do
+!write(*,*)'----//----'
+!do ii = 21,30
+!   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+!end do
+!write(*,*)'----//----'
+!do ii = 31,40
+!   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+!end do
 !
 !call thomas(np,-as,ap,-an,Su,phi)
 do kk = 1,nx
@@ -102,20 +102,25 @@ do kk = 1,nx
    phi_prev = phi 
    call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
    ! Test Print
-   write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
-   write(*,*)'================================================================='
-   do ii = 11,21
-      write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+!   write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
+!   write(*,*)'================================================================='
+!   do ii = 11,21
+!      write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
+!   end do
+!   write(*,*)'----//----'
+end do
+!--------------------------------------------------------------------------!
+!
+!...Write the results to a file
+!
+!--------------------------------------------------------------------------!
+open(unit=7,file='phi_distr.dat',ACTION="write", STATUS="replace")
+do ii = 1,nx
+   do jj = 1,ny
+      write(7,301)x(ii),y(jj),phi((ii-1)*ny+jj)
    end do
-   write(*,*)'----//----'
+   write(7,*)
 end do
-!
-write(*,*)'Solution:'
-do ii = 1,np
-   write(*,*)phi(ii)
-end do
-
-!
 !   deallocate data
 !
 deallocate(x,y)
@@ -123,4 +128,5 @@ deallocate(an,as,aw,ae)
 deallocate(ap)
 !
 301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
+401 format(3x,f12.5,3x,f12.5,3x,f12.5)
 END
