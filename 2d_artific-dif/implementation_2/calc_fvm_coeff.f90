@@ -22,7 +22,6 @@ do ii = 1,np
    Sp(ii) = 0.
    Su(ii) = 0.
    ! 
-   ! 
 end do
 !
 END SUBROUTINE CALC_FVM_COEFFICIENTS
