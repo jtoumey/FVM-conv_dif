@@ -30,6 +30,12 @@ real, dimension(JL,IL) :: phi,phiprev
 real t1,t2
 real Frp
 !
+!   TEST ARRAY
+!
+real, dimension(IL*JL) :: as_t,aw_t,ap_t,ae_t,an_t,Su_t,Sp_t
+integer t_c
+t_c = 1
+!
 !...Parameters for iteration
 !
 resid = 1000.
@@ -97,12 +103,21 @@ do while (resid >= .001)
    Sp = -(Fx*dy + Fy*dx)
    Su = Fx*dy*phiW + Fy*dx*phiS
    ap = aw + ae + as + an - Sp
-   write(*,*)'SW aP: ',ap
    !
    a(1) = -as
    b(1) =  ap
    c(1) = -an
    d(1) =  Su
+   !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   t_c = t_c + 1
    !
    resid = resid + abs(ae*phi(1,2) + an*phi(2,1) + Su - ap*phi(1,1))
    Frp = Frp + abs(ap*phi(1,1))
@@ -121,6 +136,16 @@ do while (resid >= .001)
       c(jj) = -an
       d(jj) =  Su + ae*phi(jj,2)
       !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      t_c = t_c + 1
+      !
       resid = resid + abs(ae*phi(jj,2) + an*phi(jj+1,1) + as*phi(jj-1,1) + Su - ap*phi(jj,1))
       Frp = Frp + abs(ap*phi(jj,1))
    end do
@@ -137,6 +162,16 @@ do while (resid >= .001)
    b(JL) =  ap
    c(JL) = -an
    d(JL) =  Su + ae*phi(JL,2)
+   !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   t_c = t_c + 1
    !
    resid = resid + abs(ae*phi(JL,2) + as*phi(JL-1,1) + Su - ap*phi(JL,1))
    Frp = Frp + abs(ap*phi(JL,1))
@@ -166,6 +201,17 @@ do while (resid >= .001)
       c(1) = -an
       d(1) =  Su + ae*phi(1,ii+1) + aw*phi(1,ii-1)
       !
+      !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      t_c = t_c + 1
+      !
       resid = resid + abs(aw*phi(1,ii-1) + ae*phi(1,ii+1) + an*phi(2,ii) + Su - ap*phi(1,ii))
       Frp = Frp + abs(ap*phi(1,ii))
       !
@@ -182,6 +228,16 @@ do while (resid >= .001)
          b(jj) =  ap
          c(jj) = -an
          d(jj) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
+         !
+         !   test arrays
+         as_t(t_c) = as
+         aw_t(t_c) = aw
+         ae_t(t_c) = ae
+         an_t(t_c) = an
+         Sp_t(t_c) = Sp
+         Su_t(t_c) = Su
+         ap_t(t_c) = ap
+         t_c = t_c + 1
          !
          resid = resid + abs(aw*phi(jj,ii-1) + ae*phi(jj,ii+1) + an*phi(jj+1,ii) + as*phi(jj-1,ii) + Su - ap*phi(jj,ii))
          Frp = Frp + abs(ap*phi(jj,ii))
@@ -200,6 +256,16 @@ do while (resid >= .001)
       b(JL) =  ap
       c(JL) = -an
       d(JL) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
+      !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      t_c = t_c + 1
       !
       resid = resid + abs(aw*phi(JL,ii-1) + ae*phi(JL,ii+1) + as*phi(JL-1,ii) + Su - ap*phi(JL,ii))
       Frp = Frp + abs(ap*phi(JL,ii))
@@ -230,6 +296,16 @@ do while (resid >= .001)
    c(1) = -an
    d(1) =  Su + aw*phi(1,IL-1)
    !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   t_c = t_c + 1
+   !
    resid = resid + abs(aw*phi(1,IL-1) + an*phi(2,IL) + Su - ap*phi(JL,IL))
    Frp = Frp + abs(ap*phi(JL,IL))
    !
@@ -246,6 +322,16 @@ do while (resid >= .001)
       b(jj) =  ap
       c(jj) = -an
       d(jj) =  Su + aw*phi(jj,IL-1)
+      !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      t_c = t_c + 1
       !
       resid = resid + abs(aw*phi(jj,IL-1) + an*phi(jj+1,IL) + as*phi(jj-1,IL) + Su - ap*phi(jj,IL))
       Frp = Frp + abs(ap*phi(jj,IL))
@@ -264,6 +350,16 @@ do while (resid >= .001)
    b(JL) =  ap
    c(JL) = -an
    d(JL) =  Su + aw*phi(JL,IL-1)
+   !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   t_c = t_c + 1
    !
    resid = resid + abs(aw*phi(JL,IL-1) + as*phi(JL-1,IL) + Su - ap*phi(JL,IL))
    Frp = Frp + abs(ap*phi(JL,IL))
@@ -298,6 +394,7 @@ do ii = 1,IL
    write(7,*)
 end do
 write(6,201)t2 - t1
+write(6,*)t_c
 201 format(3x,f12.5)
 301 format(3x,f12.5,3x,f12.5,3x,f12.5)
 401 format(3x,'*** Iteration : ',i8,3x,'Residual :',f12.5,'  ***')
