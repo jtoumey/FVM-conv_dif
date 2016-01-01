@@ -32,6 +32,8 @@ real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
 integer :: u_bound,l_bound
+real, dimension(:), allocatable :: Su_temp
+integer Su_counter
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -53,8 +55,7 @@ do jj = 1,ny
    y(jj) = (jj - 0.5)*dy
 end do
 !
-!
-!  Calculate fluxes 
+!...Calculate fluxes 
 !
 Fx = rho * u
 Fy = rho * v
@@ -62,52 +63,38 @@ Fy = rho * v
 !   calculate coefficients
 !
 !   allocate space for coefficent vectors
+!
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
+allocate(Su_temp(ny))
 phi = 0.
 phi_prev = 0.
 !
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
 call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
+call write_coeff_matrix(np,nx,ny,as,aw,ap,ae,an,Su,Sp)
 !
-call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
-do ii = 1,np
-   ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
-end do
+!call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
 !
-!write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
-!write(*,*)'================================================================='
-!do ii = 1,10
-!   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-!end do
-!write(*,*)'----//----'
-!do ii = 11,20
- !  write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-!end do
-!write(*,*)'----//----'
-!do ii = 21,30
-!   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-!end do
-!write(*,*)'----//----'
-!do ii = 31,40
-!   write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-!end do
-!
-!call thomas(np,-as,ap,-an,Su,phi)
-do kk = 1,nx
-   l_bound = (kk - 1)*ny + 1
+do jj = 1,nx
+   Su_counter = 1
+   l_bound = (jj - 1)*ny + 1
    u_bound = l_bound + ny - 1
+!   if (jj > ny .and. jj < np-ny) then
+!   write(*,*)'West Expl: ',aw(jj)*phi_prev(kk+1-ny)
+   do kk = l_bound,u_bound
+      Su(kk) = Su(kk) + aw(kk)*phi_prev(kk+1-ny) + ae(kk)*phi_prev(kk+ny)
+     ! Su_temp(Su_counter) = Su(kk) + aw(kk)*phi_prev(kk+1-ny) + ae(kk)*phi_prev(kk+ny)
+     ! Su_counter = Su_counter + 1
+!      write(*,*)'Su vector slice: ',Su(l_bound:u_bound)
+   end do
+ !  end if
    call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su(l_bound:u_bound),phi(l_bound:u_bound))
+!k   call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su_temp,phi(l_bound:u_bound))
    phi_prev = phi 
-   call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
-   ! Test Print
-!   write(*,*)'|    aS    |    aW    |    aP    |    aE    |    aN    |   Su   |'
-!   write(*,*)'================================================================='
-!   do ii = 11,21
-!      write(6,301)as(ii),aw(ii),ap(ii),ae(ii),an(ii),Su(ii)
-!   end do
-!   write(*,*)'----//----'
+ !  call update_implicit(np,nx,ny,aw,ae,Su,phi_prev)
+!   write(*,*)'Su after update_implicit: ',Su(np/2)
 end do
 !--------------------------------------------------------------------------!
 !
@@ -121,6 +108,7 @@ do ii = 1,nx
    end do
    write(7,*)
 end do
+!
 !   deallocate data
 !
 deallocate(x,y)
@@ -129,4 +117,5 @@ deallocate(ap)
 !
 301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
 401 format(3x,f12.5,3x,f12.5,3x,f12.5)
+!
 END
