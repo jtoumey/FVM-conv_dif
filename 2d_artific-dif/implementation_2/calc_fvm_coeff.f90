@@ -20,8 +20,8 @@ do ii = 1,np
    an(ii) = 0.
    as(ii) = Fy*dx
    Sp(ii) = 0.
-   Su(ii) = 0.
-   ! 
+   Su(ii) = 0.   
+   !
 end do
 !
 END SUBROUTINE CALC_FVM_COEFFICIENTS

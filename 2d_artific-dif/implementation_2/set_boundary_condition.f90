@@ -16,7 +16,7 @@ integer ii
 do ii = 1,ny
    aw(ii) = 0.
    Su(ii) = Su(ii) + 100.*Fx*dy 
-   Sp(ii) = Sp(ii) -(Fx*dy)
+   Sp(ii) = Sp(ii) - (Fx*dy)
 end do
 !   North boundary, running W to E 
 do ii = ny,np,ny
@@ -29,12 +29,15 @@ do ii = 1,np,ny
    Su(ii) = Su(ii) + 0.*Fy*dx
    Sp(ii) = Sp(ii) - (Fy*dx)
 end do
-!   East boundary, running S to N
-do ii = np,np-ny,-1
+!   East boundary, running N to S
+do ii = np,np-ny+1,-1
    ae(ii) = 0.
    Su(ii) = Su(ii) + 0.*Fx*dy 
-
 end do
+!
+!   calculate aP as the sum of neighbor coefficients minus
+!   the cell source
+!
 do ii = 1,np
    ap(ii) = ae(ii) + aw(ii) + an(ii) + as(ii) - Sp(ii)
 end do

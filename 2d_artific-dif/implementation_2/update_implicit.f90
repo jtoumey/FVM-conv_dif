@@ -8,23 +8,28 @@ real, dimension(:), intent(inout) :: aw(np),ae(np),Su(np),phi_prev(np)
 !
 !   variables used only in this subroutine
 integer ii
-integer check_index
+integer :: check_index_east,check_index_west
 !
 !...calculate neighbor coefficients using upwind scheme
 !
-do ii = ny,np
-!   write(*,301)Su(ii),aw(ii+1-ny),phi_prev(ii+1-ny),ae(ii+ny),phi_prev(ii+ny)
+do ii = 1,np
    ! this is the index of the South East cell 
    ! in the SE cell, there is no solution to the East to treat explicitly
-   check_index = np - ny + 1
+   check_index_east = np - ny + 1
+
+   ! this is the index of the South cell one East of the West boundary
+   ! in the column of the West boundary, there is no solution to the West 
+   ! to treat explicitly
+   check_index_west = ny + 1
+
    !
-   if (ii < check_index) then
+   if (ii < check_index_west) then
+      Su(ii) = Su(ii) + ae(ii)*phi_prev(ii+ny)
+   else if (ii < check_index_east) then
       Su(ii) = Su(ii) + aw(ii)*phi_prev(ii+1-ny) + ae(ii)*phi_prev(ii+ny)
    else
       Su(ii) = Su(ii) + aw(ii)*phi_prev(ii+1-ny) 
    end if
 end do
-!
-301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x)
 !
 END SUBROUTINE UPDATE_IMPLICIT
