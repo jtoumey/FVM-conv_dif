@@ -88,25 +88,7 @@ do jj = 1,nx
    ! Update Su with the explicit components from the W and E
    ! pass current N-S array slices to subroutine
    !
-   if (u_bound <= ny) then
-      !   West-most row: discard West boundary condition contribution
-      !   Calculate neighbor coefficients using upwind scheme
-      !
-      Su_temp = Su(l_bound:u_bound) + ae(l_bound:u_bound)*phi_prev(l_bound+ny:u_bound+ny)
-      !
-   else if (u_bound == np) then
-      !   East-most row: discard East boundary condition contribution
-      Su_temp = Su(l_bound:u_bound) + aw(l_bound:u_bound)*phi_prev(l_bound-ny:u_bound-ny)
-      !
-   else 
-      !   Consider explicit contributions from the West and the East
-      !
-      Su_temp = Su(l_bound:u_bound) + aw(l_bound:u_bound)*phi_prev(l_bound-ny:u_bound-ny) + &
-      ae(l_bound:u_bound)*phi_prev(l_bound+ny:u_bound+ny)
-      !
-   end if
-!   call update_explicit(ny,aw(l_bound:u_bound),ae(l_bound:u_bound),Su(l_bound:u_bound),phi_prev(l_bound-ny:u_bound-ny), &
-!   phi_prev(l_bound+ny:u_bound+ny),Su_temp,jj,nx)
+   call update_explicit(ny,np,l_bound,u_bound,Su_temp,Su,aw,ae,phi_prev)
    !
    !...Solve the tri-diagonal system for a given N-S line
    !
