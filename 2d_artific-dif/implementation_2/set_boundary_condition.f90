@@ -31,7 +31,6 @@ end do
 !   East boundary, running N to S
 do ii = np,np-ny+1,-1
    ae(ii) = 0.
-   Su(ii) = Su(ii) + 0.*Fx*dy 
 end do
 !
 !   Calculate aP as the sum of neighbor coefficients minus
