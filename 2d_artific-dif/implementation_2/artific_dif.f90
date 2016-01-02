@@ -70,6 +70,9 @@ allocate(Su_temp(ny))
 phi = 0.
 phi_prev = 0.
 !
+!   Set the fvm coefficients for the entire domain, then overwrite
+!   with the boundary conditions
+!
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
 call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
 !
@@ -83,10 +86,8 @@ do jj = 1,nx
    u_bound = l_bound + ny - 1
    !
    ! Update Su with the explicit components from the W and E
+   ! pass current N-S array slices to subroutine
    !
-   !Su_temp = Su(l_bound:u_bound) + aw(l_bound:u_bound)*phi_prev(l_bound-ny:u_bound-ny) + &
-   !ae(l_bound:u_bound)*phi_prev(l_bound+ny:u_bound+ny)
-   ! pass relevant array slices to subroutine
    call update_explicit(ny,aw(l_bound:u_bound),ae(l_bound:u_bound),Su(l_bound:u_bound),phi_prev(l_bound-ny:u_bound-ny), &
    phi_prev(l_bound+ny:u_bound+ny),Su_temp,jj,nx)
    !
@@ -112,7 +113,7 @@ do ii = 1,nx
    write(7,*)
 end do
 !
-!   deallocate data
+!   Deallocate data
 !
 deallocate(x,y)
 deallocate(an,as,aw,ae)
