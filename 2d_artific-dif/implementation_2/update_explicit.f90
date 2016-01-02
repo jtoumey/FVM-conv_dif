@@ -1,35 +1,29 @@
-SUBROUTINE UPDATE_IMPLICIT(np,nx,ny,aw,ae,Su,phi_prev)
+SUBROUTINE UPDATE_EXPLICIT(ny,aw,ae,Su,phi_prev_w,phi_prev_e,Su_temp,jj,nx)
 !
 implicit none
 !
 !   variables passed in
-integer, intent(inout) :: np,nx,ny
-real, dimension(:), intent(inout) :: aw(np),ae(np),Su(np),phi_prev(np)
+integer, intent(inout) :: ny,nx,jj
+real, dimension(:), intent(inout) :: aw(ny),ae(ny),phi_prev_w(ny),phi_prev_e(ny)
+real, dimension(:), intent(inout) :: Su(ny),Su_temp(ny)
 !
 !   variables used only in this subroutine
 integer ii
-integer :: check_index_east,check_index_west
+integer :: check_east,check_west
+!
+if (jj == 1) then
+   check_west = 0
+   check_east = 1
+else if (jj == nx) then
+   check_west = 1
+   check_east = 0
+else 
+   check_west = 1
+   check_east = 1
+end if
 !
 !...calculate neighbor coefficients using upwind scheme
 !
-do ii = 1,np
-   ! this is the index of the South East cell 
-   ! in the SE cell, there is no solution to the East to treat explicitly
-   check_index_east = np - ny + 1
-
-   ! this is the index of the South cell one East of the West boundary
-   ! in the column of the West boundary, there is no solution to the West 
-   ! to treat explicitly
-   check_index_west = ny + 1
-
-   !
-   if (ii < check_index_west) then
-      Su(ii) = Su(ii) + ae(ii)*phi_prev(ii+ny)
-   else if (ii < check_index_east) then
-      Su(ii) = Su(ii) + aw(ii)*phi_prev(ii+1-ny) + ae(ii)*phi_prev(ii+ny)
-   else
-      Su(ii) = Su(ii) + aw(ii)*phi_prev(ii+1-ny) 
-   end if
-end do
+Su_temp = Su + aw*phi_prev_w*check_west + ae*phi_prev_e*check_east
 !
-END SUBROUTINE UPDATE_IMPLICIT
+END SUBROUTINE UPDATE_EXPLICIT
