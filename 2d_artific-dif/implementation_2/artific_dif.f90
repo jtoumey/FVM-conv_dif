@@ -32,8 +32,7 @@ real Fx,Fy
 real, dimension(:), allocatable :: x,y
 integer np
 integer :: u_bound,l_bound
-real, dimension(:), allocatable :: Su_temp,Su_expl
-integer Su_counter
+real, dimension(:), allocatable :: Su_temp
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -67,7 +66,7 @@ Fy = rho * v
 allocate(an(np),as(np),aw(np),ae(np),ap(np))
 allocate(Su(np),Sp(np))
 allocate(phi(np),phi_prev(np))
-allocate(Su_temp(ny),Su_expl(np))
+allocate(Su_temp(ny))
 phi = 0.
 phi_prev = 0.
 !
@@ -77,19 +76,14 @@ call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
 !...Begin W -> E sweep along each N-S line
 !
 do jj = 1,nx
-   Su_counter = 1
+   !
+   ! Calculate the bounds for the current N-S line
+   !
    l_bound = (jj - 1)*ny + 1
    u_bound = l_bound + ny - 1
-!   if (jj > ny .and. jj < np-ny) then
-!   write(*,*)'West Expl: ',aw(jj)*phi_prev(kk+1-ny)
-!   do kk = l_bound,u_bound
-     ! Su(kk) = Su(kk) + aw(kk)*phi_prev(kk+1-ny) + ae(kk)*phi_prev(kk+ny)
-     ! Su_expl(kk) = Su(kk)
-     ! Su_temp(Su_counter) = Su(kk) + aw(kk)*phi_prev(kk+1-ny) + ae(kk)*phi_prev(kk+ny)
-     ! Su_counter = Su_counter + 1
-!      write(*,*)'Su vector slice: ',Su(l_bound:u_bound)
-!   end do
- !  end if
+   !
+   ! Update Su with the explicit components from the W and E
+   !
    Su_temp = Su(l_bound:u_bound) + aw(l_bound:u_bound)*phi_prev(l_bound-ny:u_bound-ny) + &
    ae(l_bound:u_bound)*phi_prev(l_bound+ny:u_bound+ny)
    !
@@ -98,10 +92,10 @@ do jj = 1,nx
    call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su_temp,phi(l_bound:u_bound))
    !
    !...Save the solution for explicit treatment at the next N-S line
+   !
    phi_prev = phi 
    !
 end do
-call write_coeff_matrix(np,nx,ny,as,aw,ap,ae,an,Su,Sp,Su_expl)
 !--------------------------------------------------------------------------!
 !
 !...Write the results to a file
