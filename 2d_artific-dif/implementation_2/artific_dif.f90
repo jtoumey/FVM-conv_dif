@@ -86,7 +86,6 @@ do jj = 1,nx
    u_bound = l_bound + ny - 1
    !
    ! Update Su with the explicit components from the W and E
-   ! pass current N-S array slices to subroutine
    !
    call update_explicit(ny,np,l_bound,u_bound,Su_temp,Su,aw,ae,phi_prev)
    !
