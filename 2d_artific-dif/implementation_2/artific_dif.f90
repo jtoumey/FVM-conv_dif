@@ -102,7 +102,7 @@ do while (resid >= tol)
       !
       !...Calculate residual
       !
-      call calc_residual
+      call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev)
       !
       !...Save the solution for explicit treatment at the next N-S line
       !
