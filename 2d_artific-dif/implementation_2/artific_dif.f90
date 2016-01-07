@@ -34,7 +34,6 @@ integer np
 integer :: u_bound,l_bound
 real, dimension(:), allocatable :: Su_temp
 !
-integer :: iter
 real :: resid, tol
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
@@ -100,6 +99,10 @@ do while (resid >= tol)
       !...Solve the tri-diagonal system for a given N-S line
       !
       call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su_temp,phi(l_bound:u_bound))
+      !
+      !...Calculate residual
+      !
+      call calc_residual
       !
       !...Save the solution for explicit treatment at the next N-S line
       !

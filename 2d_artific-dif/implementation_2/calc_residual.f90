@@ -1,4 +1,4 @@
-SUBROUTINE CALC_RESIDUAL(np,nx,ny,
+SUBROUTINE CALC_RESIDUAL(np,nx,ny,as,aw,ap,ae,an,phi_prev)
 !
 implicit none
 !
