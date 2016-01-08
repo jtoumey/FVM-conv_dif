@@ -104,15 +104,16 @@ do while (resid >= tol)
       !
       call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su_temp,phi(l_bound:u_bound))
       !
-      !...Calculate residual
-      !
-      call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev,resid,Frp)
-      !
       !...Save the solution for explicit treatment at the next N-S line
       !
       phi_prev = phi 
       !
    end do
+   !
+   !...Calculate residual
+   !
+   call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev,resid,Frp)
+   !
    if (iter < 1) then
       Frp = 1.
    end if
@@ -120,8 +121,8 @@ do while (resid >= tol)
    !
    !...Increment the iteration and print the iteration results to the screen
    !
-   write(6,501)iter,resid
    iter = iter + 1
+   write(6,501)iter,resid
 end do
 !--------------------------------------------------------------------------!
 !
