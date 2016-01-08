@@ -1,4 +1,4 @@
-SUBROUTINE CALC_RESIDUAL(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev)
+SUBROUTINE CALC_RESIDUAL(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev,resid)
 !
 implicit none
 !
@@ -10,7 +10,8 @@ real, dimension(np) :: Su
 real, dimension(np) :: phi_prev
 !
 ! variables used only in this subroutine
-integer ii,jj
+integer :: ii,jj
+integer :: l_bnd,u_bnd
 !
 !----------------------------------------------------------------------!
 !
@@ -25,15 +26,21 @@ integer ii,jj
 !   solution to Su. 
 !
 !----------------------------------------------------------------------!
-
+resid = 0.
 !----------------------------------------------------------------------!
 !
 !   Residual contribution from interior cells 
 !
 !----------------------------------------------------------------------!
-!!do jj = 1,34
-   !write(*,*)'p'
-!end do
+do ii = 2,nx-1
+   l_bnd = (ii - 1)*ny + 2
+   u_bnd = l_bnd + (ny - 3)
+   !
+   do jj = l_bnd,u_bnd
+      resid = resid + abs(aw(jj)*phi_prev(jj-ny) + ae(jj)*phi_prev(jj+ny) + an(jj)*phi_prev(jj+1) + as(jj)*phi_prev(jj-1) + &
+      Su(jj) - ap(jj)*phi_prev(jj))
+   end do
+end do
 !----------------------------------------------------------------------!
 !
 !   Residual contribution from the four corners 
@@ -58,5 +65,36 @@ resid = resid + abs(aw(ii)*phi_prev(ii-ny) + an(ii)*phi_prev(ii+1) + Su(ii) - ap
 
 ii = np ! keep track of index
 resid = resid + abs(aw(ii)*phi_prev(ii-ny) + as(ii)*phi_prev(ii-1) + Su(ii) - ap(ii)*phi_prev(ii))
+!
+!----------------------------------------------------------------------!
+!
+!   Residual contribution from the cells adjacent to boundaries,
+!   excluding corners 
+!
+!----------------------------------------------------------------------!
+!
+! West Boundary, no corners (only count contribution from N, S, and E cells)
+
+do ii = 2,ny-1
+   resid = resid + abs(ae(ii)*phi_prev(ii+ny) + an(ii)*phi_prev(ii+1) + as(ii)*phi_prev(ii-1) + Su(ii) - ap(ii)*phi_prev(ii))
+end do
+!
+! South Boundary, no corners (only count contribution from N, E, W cells 
+
+do ii = ny+1,(nx-2)*ny+1,ny
+   resid = resid + abs(aw(ii)*phi_prev(ii-ny) + ae(ii)*phi_prev(ii+ny) + an(ii)*phi_prev(ii+1) + Su(ii) - ap(ii)*phi_prev(ii))
+end do
+!
+! East Boundary, no corners (only count contribution from N, S, and W cells)
+
+do ii = (nx-1)*ny+2,np-1
+   resid = resid + abs(aw(ii)*phi_prev(ii-ny) + an(ii)*phi_prev(ii+1) + as(ii)*phi_prev(ii-1) + Su(ii) - ap(ii)*phi_prev(ii))
+end do
+!
+! North Boundary, no corners (only count contribution from S, E, W cells 
+
+do ii = 2*ny,np-ny,ny
+   resid = resid + abs(aw(ii)*phi_prev(ii-ny) + ae(ii)*phi_prev(ii+ny) + as(ii)*phi_prev(ii-1) + Su(ii) - ap(ii)*phi_prev(ii))
+end do
 !
 END SUBROUTINE CALC_RESIDUAL
