@@ -34,7 +34,7 @@ integer np
 integer :: u_bound,l_bound
 real, dimension(:), allocatable :: Su_temp
 !
-real :: resid, tol
+real :: resid,tol,Frp
 !
 call read_input(xmax,ymax,nx,ny,rho,u,v)
 write(*,*)xmax,ymax,nx,ny,rho,u,v
@@ -61,9 +61,10 @@ end do
 Fx = rho * u
 Fy = rho * v
 !
-iter = 0
+iter  = 0
 resid = 1000.
-tol = 0.01
+tol   = 0.01
+Frp   = 0.
 !
 !   calculate coefficients
 !
@@ -105,13 +106,17 @@ do while (resid >= tol)
       !
       !...Calculate residual
       !
-      call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev,resid)
+      call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev,resid,Frp)
       !
       !...Save the solution for explicit treatment at the next N-S line
       !
       phi_prev = phi 
       !
    end do
+   if (iter < 1) then
+      Frp = 1.
+   end if
+   resid = resid/Frp
    !
    !...Increment the iteration and print the iteration results to the screen
    !
