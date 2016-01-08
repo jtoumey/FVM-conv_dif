@@ -82,9 +82,12 @@ phi_prev = 0.
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
 call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
 !
-!...Begin W -> E sweep along each N-S line
+!...Begin iteration to solve to within tolerance
 !
 do while (resid >= tol)
+   !
+   !...Begin W -> E sweep along each N-S line
+   !
    do jj = 1,nx
       !
       ! Calculate the bounds for the current N-S line
@@ -102,13 +105,18 @@ do while (resid >= tol)
       !
       !...Calculate residual
       !
-      call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev)
+      call calc_residual(np,nx,ny,as,aw,ap,ae,an,Su,phi_prev,resid)
       !
       !...Save the solution for explicit treatment at the next N-S line
       !
       phi_prev = phi 
       !
    end do
+   !
+   !...Increment the iteration and print the iteration results to the screen
+   !
+   write(6,501)iter,resid
+   iter = iter + 1
 end do
 !--------------------------------------------------------------------------!
 !
@@ -131,5 +139,6 @@ deallocate(ap)
 !
 301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
 401 format(3x,f12.5,3x,f12.5,3x,f12.5)
+501 format('*** Iteration: ',i6,3x,'Residual: ',f12.5,'   ***')
 !
 END
