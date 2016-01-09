@@ -136,6 +136,7 @@ do ii = 1,nx
    end do
    write(7,*)
 end do
+close(7)
 !
 !   Deallocate data
 !
