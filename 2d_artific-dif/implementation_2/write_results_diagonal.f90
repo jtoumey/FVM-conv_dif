@@ -1,24 +1,20 @@
-SUBROUTINE WRITE_RESULTS_DIAGONAL(np,ny,y,phi)
+SUBROUTINE WRITE_RESULTS_DIAGONAL(np,nx,ny,y,phi)
 !
 implicit none
 !
 ! variables passed in
-integer :: np,ny
+integer :: np,nx,ny
 real, dimension(np), intent(inout) :: phi
 real, dimension(ny), intent(inout) :: y
 !
 ! variables used only in this subroutine
-integer :: diag_index,grid_index
-!
-diag_index = ny
-grid_index = 1
+integer :: diag_index,ii
 !
 open(unit=8,file='phi_diagonal.dat',ACTION="write", STATUS="replace")
 !
-do while (diag_index > 0)
-   write(8,201)y(grid_index),phi(diag_index)
-   diag_index = diag_index - 1
-   grid_index = grid_index + 1
+do ii = 1,nx
+   diag_index = ii*ny - (ii-1)
+   write(8,201)y(ii),phi(diag_index)
 end do
 !
 !   Close the output file

@@ -137,7 +137,7 @@ do ii = 1,nx
    write(7,*)
 end do
 close(7)
-call write_results_diagonal(np,ny,y,phi)
+call write_results_diagonal(np,nx,ny,y,phi)
 !
 !   Deallocate data
 !
