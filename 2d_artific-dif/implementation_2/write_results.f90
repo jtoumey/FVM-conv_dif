@@ -1,4 +1,4 @@
-SUBROUTINE WRITE_RESULTS_DIAGONAL(np,nx,ny,x,y,phi)
+SUBROUTINE WRITE_RESULTS_DIAGONAL(np,nx,ny,x,y,phi,phiW,phiE)
 !
 implicit none
 !
@@ -7,6 +7,7 @@ integer, intent(inout) :: np,nx,ny
 real, dimension(np), intent(inout) :: phi
 real, dimension(ny), intent(inout) :: y
 real, dimension(nx), intent(inout) :: x
+real :: phiW,phiE
 !
 ! variables used only in this subroutine
 integer :: diag_index,ii,jj
@@ -37,9 +38,9 @@ do ii = 1,nx
    !   the domain)
    !
    if (ii <= nx/2) then ! check if past halfway across diagonal
-      phi_exact = 100.
+      phi_exact = phiW
    else 
-      phi_exact = 0.
+      phi_exact = phiE
    end if
    ! 
    !   Compute index of the cell on the diagonal from (0, ymax) -> (xmax, 0)

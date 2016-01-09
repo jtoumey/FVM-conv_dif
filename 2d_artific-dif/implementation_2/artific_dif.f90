@@ -34,10 +34,12 @@ integer np
 integer :: u_bound,l_bound
 real, dimension(:), allocatable :: Su_temp
 !
+real :: phiS,phiW,phiN,phiE
+!
 real :: resid,tol,Frp
 !
-call read_input(xmax,ymax,nx,ny,rho,u,v)
-write(*,*)xmax,ymax,nx,ny,rho,u,v
+call read_input(xmax,ymax,nx,ny,rho,u,v,phiS,phiW,phiN,phiE)
+write(*,*)xmax,ymax,nx,ny,rho,u,v,phiS,phiW,phiN,phiE
 !
 !   allocate memory for the coordinates of cell centers
 !
@@ -81,7 +83,7 @@ phi_prev = 0.
 !   with the boundary conditions
 !
 call calc_fvm_coefficients(np,dx,dy,Fx,Fy,an,as,aw,ae,Su,Sp)
-call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp)
+call set_boundary_condition(np,nx,ny,Fx,Fy,dx,dy,ap,an,as,aw,ae,Su,Sp,phiS,phiW,phiN,phiE)
 !
 !...Begin iteration to solve to within tolerance
 !
@@ -127,7 +129,7 @@ end do
 !
 !...Write the results to output files
 !
-call write_results_diagonal(np,nx,ny,x,y,phi)
+call write_results_diagonal(np,nx,ny,x,y,phi,phiW,phiE)
 !
 !   Deallocate data
 !

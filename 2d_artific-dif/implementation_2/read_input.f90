@@ -1,10 +1,11 @@
-SUBROUTINE READ_INPUT(xmax,ymax,nx,ny,rho,u,v)
+SUBROUTINE READ_INPUT(xmax,ymax,nx,ny,rho,u,v,phiS,phiW,phiN,phiE)
 IMPLICIT NONE
 !
 ! variables passed in, to be modified
 real, intent(out) :: xmax, ymax
 integer, intent(out) :: nx, ny
 real, intent(out) :: rho, u, v
+real, intent(out) :: phiS,phiW,phiN,phiE
 !
 ! variables used only in this subroutine
 character(len=25 ) :: grid_file_name
@@ -27,6 +28,10 @@ do while (io_status .GT. 0)
    read(2,*)line_buffer, rho
    read(2,*)line_buffer, u 
    read(2,*)line_buffer, v 
+   read(2,*)line_buffer, phiS 
+   read(2,*)line_buffer, phiW
+   read(2,*)line_buffer, phiN
+   read(2,*)line_buffer, phiE
    !
 end do
 write(*,*)'SUCCESSFULLY READ THE INPUT FILE.'
