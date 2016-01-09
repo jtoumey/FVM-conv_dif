@@ -124,20 +124,11 @@ do while (resid >= tol)
    iter = iter + 1
    write(6,501)iter,resid
 end do
-!--------------------------------------------------------------------------!
 !
-!...Write the results to a file
+!...Write the results to output files
 !
-!--------------------------------------------------------------------------!
-open(unit=7,file='phi_distr.dat',ACTION="write", STATUS="replace")
-do ii = 1,nx
-   do jj = 1,ny
-      write(7,301)x(ii),y(jj),phi((ii-1)*ny+jj)
-   end do
-   write(7,*)
-end do
-close(7)
-call write_results_diagonal(np,nx,ny,y,phi)
+call write_results_diagonal(np,nx,ny,x,y,phi)
+!
 !
 !   Deallocate data
 !
@@ -145,8 +136,6 @@ deallocate(x,y)
 deallocate(an,as,aw,ae)
 deallocate(ap)
 !
-301 format(3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2,3x,f7.2)
-401 format(3x,f12.5,3x,f12.5,3x,f12.5)
 501 format('*** Iteration: ',i6,3x,'Residual: ',f12.5,'   ***')
 !
 END
