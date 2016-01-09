@@ -129,7 +129,6 @@ end do
 !
 call write_results_diagonal(np,nx,ny,x,y,phi)
 !
-!
 !   Deallocate data
 !
 deallocate(x,y)
