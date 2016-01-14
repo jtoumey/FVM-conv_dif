@@ -91,26 +91,26 @@ do while (resid >= tol)
    !
    !...Begin W -> E sweep along each N-S line
    !
-   do jj = 1,nx
+!   do jj = 1,nx
       !
       ! Calculate the bounds for the current N-S line
       !
-      l_bound = (jj - 1)*ny + 1
-      u_bound = l_bound + ny - 1
+!      l_bound = (jj - 1)*ny + 1
+!      u_bound = l_bound + ny - 1
       !
       ! Update Su with the explicit components from the W and E
       !
-      call update_explicit(ny,np,l_bound,u_bound,Su_temp,Su,aw,ae,phi_prev)
+!      call update_explicit(ny,np,l_bound,u_bound,Su_temp,Su,aw,ae,phi_prev)
       !
       !...Solve the tri-diagonal system for a given N-S line
       !
-      call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su_temp,phi(l_bound:u_bound))
+!      call thomas(ny,-as(l_bound:u_bound),ap(l_bound:u_bound),-an(l_bound:u_bound),Su_temp,phi(l_bound:u_bound))
       !
       !...Save the solution for explicit treatment at the next N-S line
       !
-      phi_prev = phi 
+!      phi_prev = phi 
       !
-   end do
+!   end do
    !
    !...Calculate residual
    !
