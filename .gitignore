@@ -1,2 +1,7 @@
+2d_artific-dif/implementation_2/bin/
+
 *.exe
 *.dat
+*.o
+*.png
+*.mod

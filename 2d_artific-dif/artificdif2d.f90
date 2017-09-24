@@ -19,7 +19,7 @@ PROGRAM ARTIFICDIF2D
 IMPLICIT NONE
 !
 integer IL,JL,ii,jj,kk,iter
-parameter (IL=1000,JL=1000)
+parameter (IL=10,JL=10)
 real dx,dy,xmax,ymax,x(IL),y(JL)
 real rho,u,v
 real phiW,phiN,phiE,phiS,Fx,Fy
@@ -29,6 +29,12 @@ real phisol(JL),resid
 real, dimension(JL,IL) :: phi,phiprev
 real t1,t2
 real Frp
+!
+!   TEST ARRAY
+!
+real, dimension(IL*JL) :: as_t,aw_t,ap_t,ae_t,an_t,Su_t,Sp_t
+real, dimension(IL*JL) :: Su_expl
+integer t_c
 !
 !...Parameters for iteration
 !
@@ -77,6 +83,7 @@ call cpu_time(t1)
 do while (resid >= .001)
    !   save previous phi distribution to compare errors
    phiprev = phi
+   t_c = 1
    !************************************************************************
    !
    !   Set the residual to zero to begin the summation. 
@@ -103,6 +110,17 @@ do while (resid >= .001)
    c(1) = -an
    d(1) =  Su
    !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   Su_expl(t_c) = d(1)
+   t_c = t_c + 1
+   !
    resid = resid + abs(ae*phi(1,2) + an*phi(2,1) + Su - ap*phi(1,1))
    Frp = Frp + abs(ap*phi(1,1))
    !   West Interior cells
@@ -120,6 +138,17 @@ do while (resid >= .001)
       c(jj) = -an
       d(jj) =  Su + ae*phi(jj,2)
       !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      Su_expl(t_c) = d(jj)
+      t_c = t_c + 1
+      !
       resid = resid + abs(ae*phi(jj,2) + an*phi(jj+1,1) + as*phi(jj-1,1) + Su - ap*phi(jj,1))
       Frp = Frp + abs(ap*phi(jj,1))
    end do
@@ -136,6 +165,17 @@ do while (resid >= .001)
    b(JL) =  ap
    c(JL) = -an
    d(JL) =  Su + ae*phi(JL,2)
+   !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   Su_expl(t_c) = d(JL)
+   t_c = t_c + 1
    !
    resid = resid + abs(ae*phi(JL,2) + as*phi(JL-1,1) + Su - ap*phi(JL,1))
    Frp = Frp + abs(ap*phi(JL,1))
@@ -165,6 +205,18 @@ do while (resid >= .001)
       c(1) = -an
       d(1) =  Su + ae*phi(1,ii+1) + aw*phi(1,ii-1)
       !
+      !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      Su_expl(t_c) = d(1)
+      t_c = t_c + 1
+      !
       resid = resid + abs(aw*phi(1,ii-1) + ae*phi(1,ii+1) + an*phi(2,ii) + Su - ap*phi(1,ii))
       Frp = Frp + abs(ap*phi(1,ii))
       !
@@ -181,6 +233,17 @@ do while (resid >= .001)
          b(jj) =  ap
          c(jj) = -an
          d(jj) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
+         !
+         !   test arrays
+         as_t(t_c) = as
+         aw_t(t_c) = aw
+         ae_t(t_c) = ae
+         an_t(t_c) = an
+         Sp_t(t_c) = Sp
+         Su_t(t_c) = Su
+         ap_t(t_c) = ap
+         Su_expl(t_c) = d(jj)
+         t_c = t_c + 1
          !
          resid = resid + abs(aw*phi(jj,ii-1) + ae*phi(jj,ii+1) + an*phi(jj+1,ii) + as*phi(jj-1,ii) + Su - ap*phi(jj,ii))
          Frp = Frp + abs(ap*phi(jj,ii))
@@ -199,6 +262,17 @@ do while (resid >= .001)
       b(JL) =  ap
       c(JL) = -an
       d(JL) =  Su + ae*phi(jj,ii+1) + aw*phi(jj,ii-1)
+      !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      Su_expl(t_c) = d(JL)
+      t_c = t_c + 1
       !
       resid = resid + abs(aw*phi(JL,ii-1) + ae*phi(JL,ii+1) + as*phi(JL-1,ii) + Su - ap*phi(JL,ii))
       Frp = Frp + abs(ap*phi(JL,ii))
@@ -229,6 +303,17 @@ do while (resid >= .001)
    c(1) = -an
    d(1) =  Su + aw*phi(1,IL-1)
    !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   Su_expl(t_c) = d(1)
+   t_c = t_c + 1
+   !
    resid = resid + abs(aw*phi(1,IL-1) + an*phi(2,IL) + Su - ap*phi(JL,IL))
    Frp = Frp + abs(ap*phi(JL,IL))
    !
@@ -245,6 +330,17 @@ do while (resid >= .001)
       b(jj) =  ap
       c(jj) = -an
       d(jj) =  Su + aw*phi(jj,IL-1)
+      !
+      !   test arrays
+      as_t(t_c) = as
+      aw_t(t_c) = aw
+      ae_t(t_c) = ae
+      an_t(t_c) = an
+      Sp_t(t_c) = Sp
+      Su_t(t_c) = Su
+      ap_t(t_c) = ap
+      Su_expl(t_c) = d(jj)
+      t_c = t_c + 1
       !
       resid = resid + abs(aw*phi(jj,IL-1) + an*phi(jj+1,IL) + as*phi(jj-1,IL) + Su - ap*phi(jj,IL))
       Frp = Frp + abs(ap*phi(jj,IL))
@@ -264,6 +360,17 @@ do while (resid >= .001)
    c(JL) = -an
    d(JL) =  Su + aw*phi(JL,IL-1)
    !
+   !   test arrays
+   as_t(t_c) = as
+   aw_t(t_c) = aw
+   ae_t(t_c) = ae
+   an_t(t_c) = an
+   Sp_t(t_c) = Sp
+   Su_t(t_c) = Su
+   ap_t(t_c) = ap
+   Su_expl(t_c) = d(JL)
+   t_c = t_c + 1
+   !
    resid = resid + abs(aw*phi(JL,IL-1) + as*phi(JL-1,IL) + Su - ap*phi(JL,IL))
    Frp = Frp + abs(ap*phi(JL,IL))
    !
@@ -277,6 +384,7 @@ do while (resid >= .001)
    !
    if (iter == 0) then
       Frp = 1.
+      call write_coeff_matrix(IL*JL,IL,JL,as_t,aw_t,ap_t,ae_t,an_t,Su_t,Sp_t,Su_expl)
    end if
    resid = resid/Frp
    !
@@ -294,6 +402,7 @@ do ii = 1,IL
    do jj = 1,JL
       write(7,301)x(ii),y(jj),phi(jj,ii)
    end do
+   write(7,*)
 end do
 write(6,201)t2 - t1
 201 format(3x,f12.5)
